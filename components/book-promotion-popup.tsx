@@ -4,7 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, X, Sparkles, Gift, Zap, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import confetti from 'canvas-confetti'
+
+// Confetti type
+type ConfettiFn = (options: any) => Promise<null> | null
 
 export function BookPromotionPopup() {
   const [isVisible, setIsVisible] = useState(false)
@@ -12,6 +14,16 @@ export function BookPromotionPopup() {
   const [email, setEmail] = useState('')
   const [showThankYou, setShowThankYou] = useState(false)
   const confettiTriggered = useRef(false)
+  const confettiRef = useRef<ConfettiFn | null>(null)
+
+  // Load confetti dynamically
+  useEffect(() => {
+    import('canvas-confetti').then((module) => {
+      confettiRef.current = module.default
+    }).catch(err => {
+      console.error('Failed to load confetti:', err)
+    })
+  }, [])
 
   useEffect(() => {
     // Check if user has already dismissed or subscribed
@@ -34,11 +46,13 @@ export function BookPromotionPopup() {
 
   // Trigger confetti when popup becomes visible
   useEffect(() => {
-    if (isVisible && isLoaded && !confettiTriggered.current) {
+    if (isVisible && isLoaded && !confettiTriggered.current && confettiRef.current) {
       confettiTriggered.current = true
       
       // Initial burst from multiple angles
       setTimeout(() => {
+        if (!confettiRef.current) return
+
         const duration = 3000
         const animationEnd = Date.now() + duration
         const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 }
@@ -47,17 +61,17 @@ export function BookPromotionPopup() {
           return Math.random() * (max - min) + min
         }
 
-        const interval: any = setInterval(() => {
+        const interval = setInterval(() => {
           const timeLeft = animationEnd - Date.now()
 
-          if (timeLeft <= 0) {
+          if (timeLeft <= 0 || !confettiRef.current) {
             return clearInterval(interval)
           }
 
           const particleCount = 50 * (timeLeft / duration)
 
           // Confetti from left side
-          confetti({
+          confettiRef.current({
             ...defaults,
             particleCount,
             origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
@@ -65,7 +79,7 @@ export function BookPromotionPopup() {
           })
 
           // Confetti from right side
-          confetti({
+          confettiRef.current({
             ...defaults,
             particleCount,
             origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
@@ -96,49 +110,53 @@ export function BookPromotionPopup() {
     // Open in new window (Mailchimp requirement)
     const mailchimpUrl = 'https://devops-daily.us2.list-manage.com/subscribe/post?u=d1128776b290ad8d08c02094f&id=fd76a4e93f&f_id=0022c6e1f0'
     const params = new URLSearchParams(formData as any).toString()
-    window.open(`${mailchimpUrl}&${params}`, '_blank')
+    window.open(\`\${mailchimpUrl}&\${params}\`, '_blank')
 
     // Show thank you message
     setShowThankYou(true)
     localStorage.setItem('book-promo-subscribed', 'true')
 
-    // Celebration confetti for subscription
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'],
-      zIndex: 9999,
-    })
-
-    // Additional star burst
-    setTimeout(() => {
-      confetti({
-        particleCount: 50,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#3b82f6', '#8b5cf6', '#ec4899'],
+    // Celebration confetti for subscription (only if loaded)
+    if (confettiRef.current) {
+      confettiRef.current({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'],
         zIndex: 9999,
       })
-      confetti({
-        particleCount: 50,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#10b981', '#f59e0b', '#06b6d4'],
-        zIndex: 9999,
-      })
-    }, 250)
 
-    // Auto-close after 3 seconds
+      // Additional star burst
+      setTimeout(() => {
+        if (confettiRef.current) {
+          confettiRef.current({
+            particleCount: 50,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#3b82f6', '#8b5cf6', '#ec4899'],
+            zIndex: 9999,
+          })
+          confettiRef.current({
+            particleCount: 50,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#10b981', '#f59e0b', '#ec4899'],
+            zIndex: 9999,
+          })
+        }
+      }, 200)
+    }
+
+    // Close popup after a moment
     setTimeout(() => {
       setIsLoaded(false)
-      setTimeout(() => setIsVisible(false), 300)
+      setTimeout(() => {
+        setIsVisible(false)
+      }, 300)
     }, 3000)
   }
-
-  if (!isVisible) return null
 
   return (
     <AnimatePresence>
@@ -147,112 +165,56 @@ export function BookPromotionPopup() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
-          onClick={handleDismiss}
+          className="fixed inset-0 z-[9998] flex items-center justify-center p-4"
+          style={{ backdropFilter: 'blur(4px)', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
         >
           <motion.div
-            initial={{ scale: 0.8, y: 50, opacity: 0 }}
-            animate={{
-              scale: isLoaded ? 1 : 0.8,
-              y: isLoaded ? 0 : 50,
-              opacity: isLoaded ? 1 : 0
-            }}
-            exit={{ scale: 0.8, y: 50, opacity: 0 }}
-            transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
-            className="relative w-full max-w-[95vw] sm:max-w-md md:max-w-lg"
-            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: isLoaded ? 1 : 0.9, opacity: isLoaded ? 1 : 0 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="relative"
           >
-            {/* Close button - more visible on mobile */}
-            <button
-              onClick={handleDismiss}
-              className="absolute top-2 right-2 sm:-top-2 sm:-right-2 z-10 p-2 sm:p-2.5 rounded-full bg-background/95 backdrop-blur-sm border-2 border-border shadow-xl hover:bg-muted transition-all duration-200 hover:scale-110 active:scale-95"
-              aria-label="Close popup"
-            >
-              <X className="h-6 w-6 sm:h-5 sm:w-5 stroke-[2.5]" />
-            </button>
+            <div className="relative w-[90vw] max-w-lg rounded-2xl bg-background/95 backdrop-blur-xl shadow-2xl border border-border overflow-hidden">
+              {/* Close button */}
+              <button
+                onClick={handleDismiss}
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-1.5 sm:p-2 rounded-full hover:bg-muted transition-colors"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground hover:text-foreground" />
+              </button>
 
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-purple-500/10 to-pink-500/10 border-2 border-primary/20 shadow-2xl">
-              {/* Animated background elements */}
-              <div className="absolute inset-0 overflow-hidden">
-                <motion.div
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 90, 0],
-                    opacity: [0.3, 0.5, 0.3],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-full blur-3xl"
-                />
-                <motion.div
-                  animate={{
-                    scale: [1.2, 1, 1.2],
-                    rotate: [90, 0, 90],
-                    opacity: [0.5, 0.3, 0.5],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-gradient-to-tr from-pink-500/20 to-purple-500/20 rounded-full blur-3xl"
-                />
-              </div>
+              {/* Gradient background decoration */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-purple-600 to-pink-600" />
 
               {/* Content */}
-              <div className="relative bg-background/95 backdrop-blur-xl rounded-2xl p-4 sm:p-6 md:p-8 border border-border/50">
+              <div className="relative p-6 sm:p-8 md:p-10">
                 {!showThankYou ? (
                   <>
-                    {/* Header with icons */}
-                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-                      <motion.div
-                        animate={{
-                          rotate: [0, 10, -10, 10, 0],
-                          scale: [1, 1.1, 1, 1.1, 1]
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          repeatDelay: 3
-                        }}
-                      >
-                        <BookOpen className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
-                      </motion.div>
-                      <motion.div
-                        animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0.7, 1, 0.7]
-                        }}
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                        }}
-                      >
-                        <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
-                      </motion.div>
-                    </div>
-
-                    {/* Title with gradient */}
-                    <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                      📚 Coming Soon!
-                    </h2>
-
+                    {/* Header */}
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.3, type: "spring", bounce: 0.5 }}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.1 }}
                       className="text-center mb-4 sm:mb-6"
                     >
-                      <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-                        <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500 flex-shrink-0" />
-                        <span>The DevOps Survival Guide</span>
-                        <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0" />
-                      </h3>
-                      <p className="text-muted-foreground text-base sm:text-lg">
-                        Your ultimate resource for mastering DevOps! 🚀
+                      <div className="inline-flex items-center gap-2 mb-3 sm:mb-4">
+                        <div className="relative">
+                          <BookOpen className="h-10 w-10 sm:h-12 sm:w-12 text-primary" />
+                          <motion.div
+                            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="absolute inset-0 bg-primary rounded-full blur-xl"
+                          />
+                        </div>
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        🚀 Free DevOps Resources!
+                      </h2>
+                      <p className="text-base sm:text-lg text-muted-foreground">
+                        Join thousands of developers getting weekly tips, tutorials, and ebooks! 📚
                       </p>
                     </motion.div>
 
@@ -273,7 +235,7 @@ export function BookPromotionPopup() {
                       </div>
                       <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
                         <div className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-xs">✓</div>
-                        <span>Comprehensive guides & tutorials 📖</span>
+                        <span>In-depth guides & tutorials 📖</span>
                       </div>
                     </motion.div>
 
