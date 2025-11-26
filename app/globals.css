@@ -422,3 +422,34 @@ html {
 .animate-in {
   animation: fade-in 0.2s ease-out;
 }
+
+/* DevOps Survival Guide animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-gradient {
+  animation: gradient 8s ease infinite;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
