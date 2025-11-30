@@ -1,4 +1,4 @@
-import { PostContent } from '@/components/post-content';
+import { AdventPostContent } from '@/components/advent-post-content';
 import { SponsorSidebar } from '@/components/sponsor-sidebar';
 import { InlineSponsors } from '@/components/inline-sponsors';
 import { OptimizedImage } from '@/components/optimized-image';
@@ -187,7 +187,7 @@ export default async function AdventDayPage({
 
               {/* Content */}
               <div className="prose dark:prose-invert max-w-none">
-                <PostContent content={day.content} />
+                <AdventPostContent content={day.content} />
               </div>
 
               {/* Completion Button */}
