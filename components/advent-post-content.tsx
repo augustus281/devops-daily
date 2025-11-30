@@ -43,13 +43,15 @@ export function AdventPostContent({ content }: AdventPostContentProps) {
   const beforeSolution = parts[0];
   const solutionAndAfter = parts[1];
 
-  // Find where the solution ends (next ## heading or end of content)
-  const nextHeadingMatch = solutionAndAfter.match(/\n## /);
-  const solutionContent = nextHeadingMatch
-    ? solutionAndAfter.substring(0, nextHeadingMatch.index)
+  // Find where the hidden content ends (after Explanation, before Result/Validation/Links/Share)
+  // We want to hide: Solution, Explanation
+  // We want to show: Result, Validation, Links, Share Your Success
+  const nextVisibleSectionMatch = solutionAndAfter.match(/\n## (Result|Validation|Links|Share Your Success)/);
+  const solutionContent = nextVisibleSectionMatch
+    ? solutionAndAfter.substring(0, nextVisibleSectionMatch.index)
     : solutionAndAfter;
-  const afterSolution = nextHeadingMatch
-    ? solutionAndAfter.substring(nextHeadingMatch.index!)
+  const afterSolution = nextVisibleSectionMatch
+    ? solutionAndAfter.substring(nextVisibleSectionMatch.index!)
     : '';
 
   // Parse each section
