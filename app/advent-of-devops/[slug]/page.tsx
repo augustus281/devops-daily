@@ -7,6 +7,8 @@ import { getAdventDayBySlug, getAllAdventDays, getNextAdventDay, getPreviousAdve
 import { notFound } from 'next/navigation';
 import { ArticleSchema, BreadcrumbSchema } from '@/components/schema-markup';
 import { ReadingProgressBar } from '@/components/reading-progress-bar';
+import { ReportIssue } from '@/components/report-issue';
+import { GiscusComments } from '@/components/giscus-comments';
 import { getSocialImagePath } from '@/lib/image-utils';
 import { Calendar, Clock, Trophy, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
 import Link from 'next/link';
@@ -239,6 +241,14 @@ export default async function AdventDayPage({
 
               {/* Inline Sponsors */}
               <InlineSponsors variant="full" className="my-12" />
+
+              {/* Report Issue */}
+              <div className="mt-12 pt-8 border-t">
+                <ReportIssue type="post" slug={day.slug} title={day.title} variant="compact" />
+              </div>
+
+              {/* Giscus Discussions */}
+              <GiscusComments className="mt-12" title={day.title} />
 
               {/* Navigation */}
               <div className="mt-12 pt-8 border-t border-border">

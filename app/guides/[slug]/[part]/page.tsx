@@ -9,6 +9,7 @@ import { tagToSlug } from '@/lib/tag-utils';
 import { ReadingProgressBar } from '@/components/reading-progress-bar';
 import { GuidePartNavigation } from '@/components/guide-part-navigation';
 import { ReportIssue } from '@/components/report-issue';
+import { GiscusComments } from '@/components/giscus-comments';
 import { getSocialImagePath } from '@/lib/image-utils';
 import type { Metadata } from 'next';
 
@@ -229,6 +230,9 @@ export default async function GuidePartPage({
                     variant="compact"
                   />
                 </div>
+
+                {/* Giscus Discussions */}
+                <GiscusComments className="mt-12" title={`${currentPart?.title} - ${guide.title}`} />
               </article>
             </div>
           </div>
