@@ -2,8 +2,22 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Terminal, GitBranch, Cloud, Cpu, Sparkles } from 'lucide-react';
+import { getAllPosts } from '@/lib/posts';
+import { getAllGuides } from '@/lib/guides';
+import { getActiveGames } from '@/lib/games';
 
-export function Hero() {
+export async function Hero() {
+  // Fetch counts dynamically
+  const [posts, guides, games] = await Promise.all([
+    getAllPosts(),
+    getAllGuides(),
+    getActiveGames(),
+  ]);
+
+  const postsCount = posts.length;
+  const guidesCount = guides.length;
+  const gamesCount = games.length;
+
   return (
     <div className="relative overflow-hidden bg-background">
       {/* Background decorations */}
@@ -64,15 +78,15 @@ export function Hero() {
           {/* Stats */}
           <div className="flex justify-center gap-8 mt-10 text-sm">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">200+</div>
+              <div className="text-2xl font-bold text-primary">{postsCount}+</div>
               <div className="text-muted-foreground">Articles</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">20+</div>
+              <div className="text-2xl font-bold text-primary">{guidesCount}+</div>
               <div className="text-muted-foreground">Guides</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">10+</div>
+              <div className="text-2xl font-bold text-primary">{gamesCount}+</div>
               <div className="text-muted-foreground">Games</div>
             </div>
           </div>
