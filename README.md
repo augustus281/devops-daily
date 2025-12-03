@@ -252,6 +252,62 @@ This project is deployed on [Cloudflare Pages](https://pages.cloudflare.com/) bu
 - [AWS Amplify](https://aws.amazon.com/amplify/)
 - [DigitalOcean App Platform](https://www.digitalocean.com/products/app-platform/)
 
+## 🐳 Docker
+
+You can run DevOps Daily in a Docker container for consistent development and deployment environments.
+
+### Building the Docker Image
+
+```bash
+# Build the Docker image
+docker build -t devops-daily .
+
+# Build with a specific tag
+docker build -t devops-daily:v1.0.0 .
+```
+
+### Running the Container
+
+```bash
+# Run the container
+docker run -p 3000:80 devops-daily
+
+# Run in detached mode (background)
+docker run -d -p 3000:80 --name devops-daily-app devops-daily
+
+# Run with custom port mapping
+docker run -p 8080:80 devops-daily
+```
+
+After starting the container, visit [http://localhost:3000](http://localhost:3000) (or your custom port) to see the site.
+
+### Container Management
+
+```bash
+# Stop the container
+docker stop devops-daily-app
+
+# Start the container
+docker start devops-daily-app
+
+# Remove the container
+docker rm devops-daily-app
+
+# View logs
+docker logs devops-daily-app
+
+# View logs in real-time
+docker logs -f devops-daily-app
+```
+
+### Docker Image Details
+
+- **Base Image**: Node.js 20.11.0 (Alpine) for building, Nginx (Alpine) for serving
+- **Multi-stage Build**: Optimized for minimal image size
+- **Security**: Runs as non-root user
+- **Health Check**: Built-in health check endpoint
+- **Port**: Exposes port 3000
+
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
