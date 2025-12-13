@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -223,6 +224,9 @@ const allStages: Record<string, Omit<JourneyStage, 'x' | 'y'>> = {
 };
 
 export default function PacketJourney() {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const [scenario, setScenario] = useState<ScenarioType>('https-cdn');
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -503,19 +507,32 @@ export default function PacketJourney() {
   }, [currentStageIndex, stageProgress, journeyStages, isReturning]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-blue-900 to-slate-900 text-white p-4">
+    <div className={cn(
+      "min-h-screen p-4",
+      isDark
+        ? "bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white"
+        : "bg-gradient-to-br from-blue-50 via-white to-cyan-50 text-gray-900"
+    )}>
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Breadcrumb */}
-        <nav className="flex items-center space-x-2 text-sm text-slate-400 mb-6">
+        <nav className={cn(
+          "flex items-center space-x-2 text-sm mb-6",
+          isDark ? "text-slate-400" : "text-gray-600"
+        )}>
           <Link
             href="/games"
-            className="hover:text-cyan-400 transition-colors flex items-center gap-1"
+            className={cn(
+              "transition-colors flex items-center gap-1",
+              isDark ? "hover:text-cyan-400" : "hover:text-blue-600"
+            )}
           >
             <Home className="w-4 h-4" />
             Games
           </Link>
           <span>/</span>
-          <span className="text-slate-200">Network Packet Journey</span>
+          <span className={cn(
+            isDark ? "text-slate-200" : "text-gray-900"
+          )}>Network Packet Journey</span>
         </nav>
 
         {/* Header */}
@@ -525,7 +542,10 @@ export default function PacketJourney() {
               <Sparkles className="w-8 h-8 text-cyan-400" />
               Network Packet Journey
             </h1>
-            <p className="text-slate-300 mt-2">
+            <p className={cn(
+              "mt-2",
+              isDark ? "text-slate-300" : "text-gray-600"
+            )}>
               Follow a packet through the entire network stack - from browser to database and back!
             </p>
           </div>
@@ -534,7 +554,11 @@ export default function PacketJourney() {
               variant="outline"
               size="sm"
               onClick={() => setShowEducation(!showEducation)}
-              className="bg-blue-500/20 border-blue-400 hover:bg-blue-500/30"
+              className={cn(
+                isDark
+                  ? "bg-blue-500/20 border-blue-400 hover:bg-blue-500/30 text-white"
+                  : "bg-blue-50 border-blue-300 hover:bg-blue-100 text-blue-700"
+              )}
             >
               <Info className="w-4 h-4 mr-2" />
               Learn
@@ -543,7 +567,11 @@ export default function PacketJourney() {
               variant="outline"
               size="sm"
               asChild
-              className="bg-slate-700 border-slate-600 hover:bg-slate-600"
+              className={cn(
+                isDark
+                  ? "bg-slate-700 border-slate-600 hover:bg-slate-600 text-white"
+                  : "bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-700"
+              )}
             >
               <Link href="/games">
                 <Home className="w-4 h-4 mr-2" />
@@ -565,7 +593,7 @@ export default function PacketJourney() {
                 <Sparkles className="h-4 w-4 text-cyan-400" />
                 <AlertDescription className="text-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                   <span>
-                    <strong>Pro tip:</strong> Use keyboard shortcuts - <kbd className="px-2 py-1 bg-slate-700 rounded text-xs">Space</kbd> to play/pause, <kbd className="px-2 py-1 bg-slate-700 rounded text-xs">R</kbd> to reset, <kbd className="px-2 py-1 bg-slate-700 rounded text-xs">Esc</kbd> to close details
+                    <strong>Pro tip:</strong> Use keyboard shortcuts - <kbd className={cn("px-2 py-1 rounded text-xs", isDark ? "bg-slate-700" : "bg-gray-200")}>Space</kbd> to play/pause, <kbd className={cn("px-2 py-1 rounded text-xs", isDark ? "bg-slate-700" : "bg-gray-200")}>R</kbd> to reset, <kbd className={cn("px-2 py-1 rounded text-xs", isDark ? "bg-slate-700" : "bg-gray-200")}>Esc</kbd> to close details
                   </span>
                   <Button size="sm" variant="ghost" onClick={() => setShowHint(false)} className="text-xs h-6">
                     Got it
@@ -581,17 +609,25 @@ export default function PacketJourney() {
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{ opacity: 1, scaleX: 1 }}
-            className="bg-slate-800/50 border border-slate-700 rounded-lg p-3 backdrop-blur"
+            className={cn(
+            "border rounded-lg p-3 backdrop-blur",
+            isDark
+              ? "bg-slate-800/50 border-slate-700"
+              : "bg-white/80 border-gray-200"
+          )}
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">
                 {isReturning ? 'Returning' : 'Outbound'} - Stage {currentStageIndex + 1} of {journeyStages.length}: {journeyStages[currentStageIndex]?.name}
               </span>
-              <span className="text-xs text-slate-400">
+              <span className={cn("text-xs", isDark ? "text-slate-400" : "text-gray-600")}>
                 {(stageProgress * 100).toFixed(0)}% complete
               </span>
             </div>
-            <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div className={cn(
+              "h-2 rounded-full overflow-hidden",
+              isDark ? "bg-slate-700" : "bg-gray-200"
+            )}>
               <motion.div
                 className="h-full bg-linear-to-r from-cyan-500 to-blue-500"
                 initial={{ width: 0 }}
@@ -610,7 +646,11 @@ export default function PacketJourney() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Alert className="bg-blue-500/10 border-blue-400">
+              <Alert className={cn(
+                isDark
+                  ? "bg-blue-500/10 border-blue-400 text-white"
+                  : "bg-blue-50 border-blue-300 text-gray-900"
+              )}>
                 <Info className="h-4 w-4" />
                 <AlertDescription className="text-sm">
                   <strong>How it works:</strong> Watch as a single HTTP/HTTPS request travels through multiple layers:
@@ -625,12 +665,20 @@ export default function PacketJourney() {
         </AnimatePresence>
 
         {/* Compact Controls */}
-        <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-4 backdrop-blur space-y-3">
+        <div className={cn(
+          "border rounded-lg p-4 backdrop-blur space-y-3",
+          isDark
+            ? "bg-slate-800/50 border-slate-700"
+            : "bg-white/80 border-gray-200"
+        )}>
           {/* Top Row: Scenario + Mode + Actions */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-wrap">
             {/* Scenario Selection - Compact Badges */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-sm font-medium text-slate-400">Scenario:</span>
+              <span className={cn(
+                "text-sm font-medium",
+                isDark ? "text-slate-400" : "text-gray-600"
+              )}>Scenario:</span>
               {(Object.keys(scenarios) as ScenarioType[]).map((key) => (
                 <Badge
                   key={key}
@@ -638,8 +686,12 @@ export default function PacketJourney() {
                   className={cn(
                     'cursor-pointer px-3 py-1.5 transition-all',
                     scenario === key
-                      ? 'bg-blue-600 border-blue-400 hover:bg-blue-700 text-white'
-                      : 'bg-slate-700 border-slate-600 hover:bg-slate-600 text-slate-300'
+                      ? isDark
+                        ? 'bg-blue-600 border-blue-400 hover:bg-blue-700 text-white'
+                        : 'bg-blue-500 border-blue-400 hover:bg-blue-600 text-white'
+                      : isDark
+                        ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 text-slate-300'
+                        : 'bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-700'
                   )}
                   variant={scenario === key ? 'default' : 'outline'}
                 >
@@ -650,7 +702,7 @@ export default function PacketJourney() {
 
             {/* Mode Toggle - Inline */}
             <div className="flex items-center gap-2 ml-auto">
-              <span className="text-sm text-slate-400">Mode:</span>
+              <span className={cn("text-sm", isDark ? "text-slate-400" : "text-gray-600")}>Mode:</span>
               <Button
                 size="sm"
                 onClick={() => {
@@ -661,8 +713,10 @@ export default function PacketJourney() {
                 className={cn(
                   'h-8',
                   manualMode
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-slate-700 border-slate-600 hover:bg-slate-600'
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : isDark
+                      ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 text-slate-300'
+                      : 'bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-700'
                 )}
               >
                 <Layers className="w-3 h-3 mr-1" />
@@ -678,8 +732,10 @@ export default function PacketJourney() {
                 className={cn(
                   'h-8',
                   !manualMode
-                    ? 'bg-purple-600 hover:bg-purple-700'
-                    : 'bg-slate-700 border-slate-600 hover:bg-slate-600'
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                    : isDark
+                      ? 'bg-slate-700 border-slate-600 hover:bg-slate-600 text-slate-300'
+                      : 'bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-700'
                 )}
               >
                 <Zap className="w-3 h-3 mr-1" />
@@ -689,7 +745,10 @@ export default function PacketJourney() {
           </div>
 
           {/* Main Playback Controls */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-700">
+          <div className={cn(
+            "flex flex-wrap items-center gap-2 pt-2 border-t",
+            isDark ? "border-slate-700" : "border-gray-200"
+          )}>
             {manualMode ? (
               <>
                 <Button
@@ -742,8 +801,10 @@ export default function PacketJourney() {
                       className={cn(
                         'w-10 h-8 text-xs',
                         speedMultiplier === speed
-                          ? 'bg-blue-600'
-                          : 'bg-slate-700 border-slate-600'
+                          ? 'bg-blue-600 text-white'
+                          : isDark
+                            ? 'bg-slate-700 border-slate-600 text-slate-300'
+                            : 'bg-gray-100 border-gray-300 text-gray-700'
                       )}
                     >
                       {speed}x
@@ -752,14 +813,19 @@ export default function PacketJourney() {
                 </div>
               </>
             )}
-            <Button onClick={resetJourney} variant="outline" className="bg-slate-700 border-slate-600 ml-auto">
+            <Button onClick={resetJourney} variant="outline" className={cn(
+              "ml-auto",
+              isDark
+                ? "bg-slate-700 border-slate-600 hover:bg-slate-600 text-white"
+                : "bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-700"
+            )}>
               <RotateCcw className="w-4 h-4 mr-2" />
               Reset
             </Button>
           </div>
 
           {/* Advanced Options - Collapsible */}
-          <div className="pt-2 border-t border-slate-700">
+          <div className={cn("pt-2 border-t", isDark ? "border-slate-700" : "border-gray-200")}>
             <Button
               size="sm"
               variant="ghost"
@@ -836,7 +902,12 @@ export default function PacketJourney() {
         {/* Main Visualization Area */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Journey Visualization */}
-          <Card className="lg:col-span-2 bg-slate-800/50 border-slate-700 backdrop-blur">
+          <Card className={cn(
+            "lg:col-span-2 backdrop-blur",
+            isDark
+              ? "bg-slate-800/50 border-slate-700"
+              : "bg-white/80 border-gray-200"
+          )}>
             <CardHeader className="pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
@@ -868,7 +939,12 @@ export default function PacketJourney() {
                     variant="outline"
                     size="sm"
                     onClick={() => setShowStagesPanel(!showStagesPanel)}
-                    className="lg:hidden bg-slate-700 border-slate-600 h-8"
+                    className={cn(
+                      "lg:hidden h-8",
+                      isDark
+                        ? "bg-slate-700 border-slate-600"
+                        : "bg-gray-100 border-gray-300"
+                    )}
                   >
                     <Layers className="w-3 h-3 mr-1" />
                     {showStagesPanel ? 'Hide' : 'Show'} Stages
@@ -903,7 +979,12 @@ export default function PacketJourney() {
             </CardHeader>
             <CardContent>
               {/* SVG Canvas - Redesigned for clarity */}
-              <div className="relative w-full bg-linear-to-br from-slate-900 to-slate-800 rounded-lg border border-slate-700 overflow-hidden min-h-[400px] sm:min-h-[600px]">
+              <div className={cn(
+                "relative w-full rounded-lg border overflow-hidden min-h-[400px] sm:min-h-[600px]",
+                isDark
+                  ? "bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700"
+                  : "bg-gradient-to-br from-gray-50 to-gray-100 border-gray-300"
+              )}>
                 <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     {/* Gradient for the path */}
@@ -1055,7 +1136,10 @@ export default function PacketJourney() {
                           x={stage.x}
                           y={stage.y + 0.8}
                           textAnchor="middle"
-                          className="fill-white text-[2.5px] font-bold pointer-events-none"
+                          className={cn(
+                            "text-[2.5px] font-bold pointer-events-none",
+                            isDark ? "fill-white" : "fill-gray-900"
+                          )}
                           style={{ userSelect: 'none' }}
                         >
                           {stageNumber}
@@ -1068,7 +1152,13 @@ export default function PacketJourney() {
                           textAnchor="end"
                           className={cn(
                             "text-[2.5px] font-semibold pointer-events-none transition-all",
-                            isActive ? "fill-white" : isPassed ? "fill-cyan-400" : "fill-slate-400"
+                            isActive
+                              ? isDark ? "fill-white" : "fill-gray-900"
+                              : isPassed
+                                ? "fill-cyan-400"
+                                : isDark
+                                  ? "fill-slate-400"
+                                  : "fill-gray-600"
                           )}
                           style={{ userSelect: 'none' }}
                         >
@@ -1080,7 +1170,10 @@ export default function PacketJourney() {
                           x={stage.x + 8}
                           y={stage.y + 1}
                           textAnchor="start"
-                          className="fill-slate-500 text-[2px] pointer-events-none"
+                          className={cn(
+                            "text-[2px] pointer-events-none",
+                            isDark ? "fill-slate-500" : "fill-gray-600"
+                          )}
                           style={{ userSelect: 'none' }}
                         >
                           {stage.duration}ms
@@ -1120,9 +1213,16 @@ export default function PacketJourney() {
 
                       {/* Data packet label */}
                       <text
-                        y="-2.5"
-                        textAnchor="middle"
-                        className="fill-cyan-300 text-[1.5px] font-bold pointer-events-none"
+                        x="2.5"
+                        y="0.5"
+                        textAnchor="start"
+                        className={cn(
+                          "text-[1.5px] font-bold pointer-events-none",
+                          isDark ? "fill-cyan-300" : "fill-cyan-600"
+                        )}
+                        stroke={isDark ? "#000" : "#fff"}
+                        strokeWidth="0.15"
+                        paintOrder="stroke"
                         style={{ userSelect: 'none' }}
                       >
                         DATA
@@ -1204,36 +1304,49 @@ export default function PacketJourney() {
                 {/* Helpful overlay */}
                 {!isRunning && !journeyComplete && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="bg-slate-800/95 backdrop-blur px-6 py-4 rounded-lg border-2 border-blue-400 shadow-lg">
+                    <div className={cn(
+                      "backdrop-blur px-6 py-4 rounded-lg border-2 border-blue-400 shadow-lg",
+                      isDark ? "bg-slate-800/95" : "bg-white/95"
+                    )}>
                       <p className="text-lg font-semibold text-blue-400 mb-2 flex items-center gap-2">
                         <Sparkles className="w-5 h-5" />
                         Ready to Begin!
                       </p>
-                      <p className="text-sm text-slate-300">
-                        Press <kbd className="px-2 py-1 bg-slate-700 rounded text-xs font-mono">Space</kbd> or click "Start Journey" below
+                      <p className={cn("text-sm", isDark ? "text-slate-300" : "text-gray-700")}>
+                        Press <kbd className={cn("px-2 py-1 rounded text-xs font-mono", isDark ? "bg-slate-700" : "bg-gray-200")}>Space</kbd> or click "Start Journey" below
                       </p>
                     </div>
                   </div>
                 )}
 
                 {/* Legend */}
-                <div className="absolute bottom-2 left-2 bg-slate-800/90 backdrop-blur px-3 py-2 rounded-lg border border-slate-600 text-xs">
+                <div className={cn(
+                  "absolute bottom-2 left-2 backdrop-blur px-3 py-2 rounded-lg border text-xs",
+                  isDark
+                    ? "bg-slate-800/90 border-slate-600"
+                    : "bg-white/90 border-gray-300"
+                )}>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-3 h-3 rounded-full bg-slate-600 border border-slate-500"></div>
-                      <span className="text-slate-400">Pending</span>
+                      <div className={cn(
+                        "w-3 h-3 rounded-full border",
+                        isDark
+                          ? "bg-slate-600 border-slate-500"
+                          : "bg-gray-400 border-gray-500"
+                      )}></div>
+                      <span className={cn(isDark ? "text-slate-400" : "text-gray-700")}>Pending</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded-full bg-cyan-500 border border-cyan-400 animate-pulse"></div>
-                      <span className="text-slate-300">Active</span>
+                      <span className={cn(isDark ? "text-slate-300" : "text-gray-700")}>Active</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded-full bg-cyan-500 border border-cyan-400"></div>
-                      <span className="text-slate-300">Complete</span>
+                      <span className={cn(isDark ? "text-slate-300" : "text-gray-700")}>Complete</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded-full bg-red-500 border border-red-400"></div>
-                      <span className="text-slate-300">Failed</span>
+                      <span className={cn(isDark ? "text-slate-300" : "text-gray-700")}>Failed</span>
                     </div>
                   </div>
                 </div>
@@ -1252,7 +1365,7 @@ export default function PacketJourney() {
                       <CheckCircle2 className="w-8 h-8 text-green-400" />
                       <div>
                         <h3 className="font-bold text-lg">Journey Complete!</h3>
-                        <p className="text-sm text-slate-300">
+                        <p className={cn("text-sm", isDark ? "text-slate-300" : "text-gray-700")}>
                           Round-trip completed in <strong>{totalTime.toFixed(0)}ms</strong>
                           {' '}({(totalJourneyTime * 2).toFixed(0)}ms simulated)
                         </p>
@@ -1278,7 +1391,7 @@ export default function PacketJourney() {
                       <XCircle className="w-8 h-8 text-red-400" />
                       <div>
                         <h3 className="font-bold text-lg">Connection Failed!</h3>
-                        <p className="text-sm text-slate-300">
+                        <p className={cn("text-sm", isDark ? "text-slate-300" : "text-gray-700")}>
                           Failure at <strong>{allStages[injectFailure]?.name}</strong> stage
                         </p>
                         <p className="text-xs text-slate-400 mt-1">
@@ -1296,7 +1409,12 @@ export default function PacketJourney() {
           <div className={cn("space-y-4", !showStagesPanel && "hidden lg:block")}>
             {/* Current Stage Info */}
             {isRunning && currentStageIndex < journeyStages.length && (
-              <Card className="bg-slate-800/50 border-slate-700 backdrop-blur">
+              <Card className={cn(
+                "backdrop-blur",
+                isDark
+                  ? "bg-slate-800/50 border-slate-700"
+                  : "bg-white/80 border-gray-200"
+              )}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Timer className="w-5 h-5" />
@@ -1335,7 +1453,7 @@ export default function PacketJourney() {
                     </div>
 
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold text-slate-400">What's happening:</p>
+                      <p className={cn("text-xs font-semibold", isDark ? "text-slate-400" : "text-gray-700")}>What's happening:</p>
                       {journeyStages[currentStageIndex].details.map((detail, i) => (
                         <motion.div
                           key={i}
@@ -1346,10 +1464,18 @@ export default function PacketJourney() {
                           <CheckCircle2
                             className={cn(
                               'w-3 h-3 mt-0.5 shrink-0',
-                              stageProgress > i * 0.25 ? 'text-green-400' : 'text-slate-600'
+                              stageProgress > i * 0.25
+                                ? 'text-green-400'
+                                : isDark
+                                  ? 'text-slate-600'
+                                  : 'text-gray-400'
                             )}
                           />
-                          <span className={stageProgress > i * 0.25 ? 'text-slate-200' : 'text-slate-500'}>
+                          <span className={cn(
+                            stageProgress > i * 0.25
+                              ? isDark ? 'text-slate-200' : 'text-gray-900'
+                              : isDark ? 'text-slate-500' : 'text-gray-600'
+                          )}>
                             {detail}
                           </span>
                         </motion.div>
@@ -1361,7 +1487,12 @@ export default function PacketJourney() {
             )}
 
             {/* All Stages List */}
-            <Card className="bg-slate-800/50 border-slate-700 backdrop-blur">
+            <Card className={cn(
+              "backdrop-blur",
+              isDark
+                ? "bg-slate-800/50 border-slate-700"
+                : "bg-white/80 border-gray-200"
+            )}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-lg">
@@ -1369,7 +1500,12 @@ export default function PacketJourney() {
                     Journey Stages
                   </CardTitle>
                   {isRunning && (
-                    <Badge variant="outline" className="bg-slate-700 border-slate-600 text-xs">
+                    <Badge variant="outline" className={cn(
+                      "text-xs",
+                      isDark
+                        ? "bg-slate-700 border-slate-600"
+                        : "bg-gray-100 border-gray-300"
+                    )}>
                       {currentStageIndex + 1} / {journeyStages.length}
                     </Badge>
                   )}
@@ -1387,7 +1523,7 @@ export default function PacketJourney() {
                             'flex-1 h-1 rounded-full transition-all',
                             isActive && 'bg-blue-500',
                             isPassed && 'bg-green-500',
-                            !isActive && !isPassed && 'bg-slate-700'
+                            !isActive && !isPassed && (isDark ? 'bg-slate-700' : 'bg-gray-300')
                           )}
                         />
                       );
@@ -1411,7 +1547,9 @@ export default function PacketJourney() {
                           isActive && 'border-blue-400 bg-blue-500/20 ring-2 ring-blue-400/30',
                           isPassed && !isActive && 'border-green-400/50 bg-green-500/10',
                           isFailed && 'border-red-400 bg-red-500/20',
-                          !isActive && !isPassed && !isFailed && 'border-slate-700 bg-slate-800/50 hover:bg-slate-700/50'
+                          !isActive && !isPassed && !isFailed && (isDark
+                            ? 'border-slate-700 bg-slate-800/50 hover:bg-slate-700/50'
+                            : 'border-gray-300 bg-gray-50 hover:bg-gray-100')
                         )}
                         onClick={() => setShowDetails(showDetails === stage.id ? null : stage.id)}
                         whileHover={{ scale: 1.02 }}
@@ -1424,7 +1562,9 @@ export default function PacketJourney() {
                               'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
                               isActive && 'bg-blue-500 text-white',
                               isPassed && !isActive && 'bg-green-500 text-white',
-                              !isActive && !isPassed && 'bg-slate-700 text-slate-400'
+                              !isActive && !isPassed && (isDark
+                                ? 'bg-slate-700 text-slate-400'
+                                : 'bg-gray-300 text-gray-700')
                             )}>
                               {stepNumber}
                             </div>
@@ -1436,7 +1576,7 @@ export default function PacketJourney() {
                             </div>
                             <div>
                               <h4 className="font-semibold text-sm">{stage.name}</h4>
-                              <p className="text-xs text-slate-400">{stage.duration}ms</p>
+                              <p className={cn("text-xs", isDark ? "text-slate-400" : "text-gray-600")}>{stage.duration}ms</p>
                             </div>
                           </div>
                           {isActive && <Activity className="w-4 h-4 text-blue-400 animate-pulse" />}
@@ -1450,12 +1590,15 @@ export default function PacketJourney() {
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               exit={{ opacity: 0, height: 0 }}
-                              className="mt-3 pt-3 border-t border-slate-600 space-y-1"
+                              className={cn(
+                                "mt-3 pt-3 border-t space-y-1",
+                                isDark ? "border-slate-600" : "border-gray-300"
+                              )}
                             >
-                              <p className="text-xs text-slate-300 mb-2">{stage.description}</p>
+                              <p className={cn("text-xs mb-2", isDark ? "text-slate-300" : "text-gray-700")}>{stage.description}</p>
                               {stage.details.map((detail, i) => (
-                                <div key={i} className="flex items-start gap-2 text-xs text-slate-400">
-                                  <span className="text-slate-500">•</span>
+                                <div key={i} className={cn("flex items-start gap-2 text-xs", isDark ? "text-slate-400" : "text-gray-600")}>
+                                  <span className={cn(isDark ? "text-slate-500" : "text-gray-500")}>•</span>
                                   <span>{detail}</span>
                                 </div>
                               ))}
@@ -1473,7 +1616,12 @@ export default function PacketJourney() {
 
         {/* Timeline Waterfall */}
         {showTimeline && isRunning && (
-          <Card className="bg-slate-800/50 border-slate-700 backdrop-blur">
+          <Card className={cn(
+            "backdrop-blur",
+            isDark
+              ? "bg-slate-800/50 border-slate-700"
+              : "bg-white/80 border-gray-200"
+          )}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />
@@ -1544,7 +1692,7 @@ export default function PacketJourney() {
                 <Sparkles className="w-8 h-8 text-blue-400" />
                 <div>
                   <div className="text-2xl font-bold">{journeyStages.length}</div>
-                  <div className="text-sm text-slate-300">Network Hops</div>
+                  <div className={cn("text-sm", isDark ? "text-slate-300" : "text-gray-600")}>Network Hops</div>
                 </div>
               </div>
             </CardContent>
@@ -1556,7 +1704,7 @@ export default function PacketJourney() {
                 <Timer className="w-8 h-8 text-purple-400" />
                 <div>
                   <div className="text-2xl font-bold">{totalJourneyTime}ms</div>
-                  <div className="text-sm text-slate-300">Total Latency</div>
+                  <div className={cn("text-sm", isDark ? "text-slate-300" : "text-gray-600")}>Total Latency</div>
                 </div>
               </div>
             </CardContent>
@@ -1568,7 +1716,7 @@ export default function PacketJourney() {
                 <TrendingUp className="w-8 h-8 text-green-400" />
                 <div>
                   <div className="text-2xl font-bold">{(totalJourneyTime * 2).toFixed(0)}ms</div>
-                  <div className="text-sm text-slate-300">Round-Trip Time</div>
+                  <div className={cn("text-sm", isDark ? "text-slate-300" : "text-gray-600")}>Round-Trip Time</div>
                 </div>
               </div>
             </CardContent>
@@ -1576,7 +1724,12 @@ export default function PacketJourney() {
         </div>
 
         {/* Scenario Comparison */}
-        <Card className="bg-slate-800/50 border-slate-700 backdrop-blur">
+        <Card className={cn(
+          "backdrop-blur",
+          isDark
+            ? "bg-slate-800/50 border-slate-700"
+            : "bg-white/80 border-gray-200"
+        )}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5" />
@@ -1588,7 +1741,7 @@ export default function PacketJourney() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-700">
+                  <tr className={cn("border-b", isDark ? "border-slate-700" : "border-gray-200")}>
                     <th className="text-left py-3 px-2 font-semibold">Scenario</th>
                     <th className="text-center py-3 px-2 font-semibold">Stages</th>
                     <th className="text-center py-3 px-2 font-semibold">One-Way</th>
@@ -1607,8 +1760,15 @@ export default function PacketJourney() {
                       <tr
                         key={key}
                         className={cn(
-                          'border-b border-slate-700/50 transition-colors cursor-pointer',
-                          isCurrent ? 'bg-blue-500/10' : 'hover:bg-slate-700/30'
+                          'border-b transition-colors cursor-pointer',
+                          isDark
+                            ? 'border-slate-700/50'
+                            : 'border-gray-200',
+                          isCurrent
+                            ? 'bg-blue-500/10'
+                            : isDark
+                              ? 'hover:bg-slate-700/30'
+                              : 'hover:bg-gray-100'
                         )}
                         onClick={() => handleScenarioChange(key)}
                       >
@@ -1621,10 +1781,10 @@ export default function PacketJourney() {
                           </div>
                           <div className="text-xs text-slate-400 mt-0.5">{scenarios[key].description}</div>
                         </td>
-                        <td className="text-center py-3 px-2 text-slate-300">{stages.length}</td>
-                        <td className="text-center py-3 px-2 font-mono text-slate-300">{oneWay}ms</td>
+                        <td className={cn("text-center py-3 px-2", isDark ? "text-slate-300" : "text-gray-900")}>{stages.length}</td>
+                        <td className={cn("text-center py-3 px-2 font-mono", isDark ? "text-slate-300" : "text-gray-900")}>{oneWay}ms</td>
                         <td className="text-center py-3 px-2 font-mono font-semibold text-cyan-400">{roundTrip}ms</td>
-                        <td className="py-3 px-2 text-slate-400 text-xs">
+                        <td className={cn("py-3 px-2 text-xs", isDark ? "text-slate-400" : "text-gray-600")}>
                           {key === 'http' && 'Development, testing'}
                           {key === 'https' && 'Production, secure data'}
                           {key === 'https-cdn' && 'Global users, static content'}
@@ -1636,9 +1796,14 @@ export default function PacketJourney() {
                 </tbody>
               </table>
             </div>
-            <div className="mt-4 p-3 bg-slate-700/30 rounded-lg border border-slate-600">
-              <p className="text-xs text-slate-400">
-                <strong className="text-slate-300">💡 Insight:</strong> The CDN cached scenario is {' '}
+            <div className={cn(
+              "mt-4 p-3 rounded-lg border",
+              isDark
+                ? "bg-slate-700/30 border-slate-600"
+                : "bg-blue-50 border-blue-200"
+            )}>
+              <p className={cn("text-xs", isDark ? "text-slate-400" : "text-gray-700")}>
+                <strong className={cn(isDark ? "text-slate-300" : "text-gray-900")}>💡 Insight:</strong> The CDN cached scenario is {' '}
                 {Math.round((
                   (scenarios['https-cdn'].stages.map(id => allStages[id]).reduce((sum, s) => sum + s.duration, 0) -
                   scenarios['https-cdn-cache'].stages.map(id => allStages[id]).reduce((sum, s) => sum + s.duration, 0)) /
