@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { Breadcrumb } from '@/components/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -604,18 +603,9 @@ export function CardsAgainstDevOps() {
     },
     [gameState.currentBlackCard, gameState.round, gameState.gameHistory]
   );
-
-  const breadcrumbItems = [
-    { label: 'Games', href: '/games' },
-    { label: 'Cards Against DevOps', href: '/games/cards-against-devops', isCurrent: true },
-  ];
-
-  return (
+return (
     <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-6 sm:py-8">
-        {/* Breadcrumb */}
-        <Breadcrumb items={breadcrumbItems} />
-        {/* Header */}
+      <div className="container mx-auto px-4 py-6 sm:py-8">{/* Header */}
         <div className="text-center mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

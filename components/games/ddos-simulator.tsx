@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
-import { Breadcrumb } from '@/components/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -121,11 +120,6 @@ export default function DDoSSimulator() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const isDark = resolvedTheme === 'dark';
-
-  const breadcrumbItems = [
-    { label: 'Games', href: '/games' },
-    { label: 'DDoS Simulator', href: '/games/ddos-simulator', isCurrent: true },
-  ];
 
   // Game state
   const [isRunning, setIsRunning] = useState(false);
@@ -565,9 +559,6 @@ export default function DDoSSimulator() {
         : "bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50"
     )}>
       <div className={cn("container mx-auto px-4 py-6 sm:py-8 transition-transform duration-200", screenShake && "animate-shake")}>
-        {/* Breadcrumb */}
-        <Breadcrumb items={breadcrumbItems} />
-
         {/* Achievement Notification */}
         <AnimatePresence>
           {newAchievement && (
