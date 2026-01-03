@@ -525,7 +525,6 @@ export default function PacketJourney() {
     )}>
      <div className="max-w-7xl mx-auto space-y-6">
        {/* Breadcrumb */}
-       </nav>
 
        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
