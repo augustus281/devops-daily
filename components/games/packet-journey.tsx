@@ -572,24 +572,9 @@ export default function PacketJourney() {
             >
               <Info className="w-4 h-4 mr-2" />
               Learn
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className={cn(
-                isDark
-                  ? "bg-slate-700 border-slate-600 hover:bg-slate-600 text-white"
-                  : "bg-gray-100 border-gray-300 hover:bg-gray-200 text-gray-700"
-              )}
-            >
-              <Link href="/games">
-                <Home className="w-4 h-4 mr-2" />
-                All Games
-              </Link>
-            </Button>
-          </div>
-        </div>
+         </Button>
+       </div>
+     </div>
 
         {/* Keyboard Shortcuts Hint */}
         <AnimatePresence>
