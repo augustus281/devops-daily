@@ -421,14 +421,10 @@ export default function DbmsSimulator() {
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setPhase('playground')} className="gap-2">
                 <ArrowRight className="h-4 w-4" />
-                Try Playground
-              </Button>
-              <Button variant="outline" onClick={() => setPhase('intro')} className="gap-2">
-                <Home className="h-4 w-4" />
-                Home
-              </Button>
-            </div>
-          </motion.div>
+               Try Playground
+             </Button>
+           </div>
+         </motion.div>
 
           {/* DBMS Type Selector */}
           <motion.div
