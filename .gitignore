@@ -34,3 +34,4 @@ package-lock.json
 # generated static markdown files
 /public/posts/
 /public/guides/
+/public/advent-of-devops/
