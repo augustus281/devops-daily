@@ -15,6 +15,12 @@ export function ChecklistItemComponent({ item, checked, onToggle }: ChecklistIte
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const hasDetails = item.description || item.codeBlocks || (item.links && item.links.length > 0);
 
+  const handleTitleClick = () => {
+    if (hasDetails) {
+      setExpanded(!expanded);
+    }
+  };
+
   const copyToClipboard = async (code: string, index: number) => {
     try {
       await navigator.clipboard.writeText(code);
@@ -27,10 +33,18 @@ export function ChecklistItemComponent({ item, checked, onToggle }: ChecklistIte
 
   return (
     <div className="border border-gray-200 dark:border-gray-700 rounded-lg mb-3 overflow-hidden transition-all hover:shadow-md">
-      <div className="p-4">
+      <div 
+        className={`p-4 ${
+          hasDetails ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors' : ''
+        }`}
+        onClick={handleTitleClick}
+      >
         <div className="flex items-start gap-3">
           <button
-            onClick={() => onToggle(item.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle(item.id);
+            }}
             className="mt-0.5 flex-shrink-0 transition-transform hover:scale-110"
             aria-label={checked ? `Mark "${item.title}" as incomplete` : `Mark "${item.title}" as complete`}
           >
@@ -61,7 +75,10 @@ export function ChecklistItemComponent({ item, checked, onToggle }: ChecklistIte
               </div>
               {hasDetails && (
                 <button
-                  onClick={() => setExpanded(!expanded)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpanded(!expanded);
+                  }}
                   className="flex-shrink-0 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
                   aria-label={expanded ? 'Collapse details' : 'Expand details'}
                 >
@@ -73,7 +90,7 @@ export function ChecklistItemComponent({ item, checked, onToggle }: ChecklistIte
             </div>
 
             {expanded && hasDetails && (
-              <div className="mt-3 space-y-2">
+              <div className="mt-3 space-y-2" onClick={(e) => e.stopPropagation()}>
                 {item.description && (
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     {item.description}
@@ -89,12 +106,12 @@ export function ChecklistItemComponent({ item, checked, onToggle }: ChecklistIte
                           </p>
                         )}
                         <div className="relative group">
-                          <pre className="bg-gray-900 dark:bg-gray-950 text-gray-100 p-4 rounded-lg overflow-x-auto text-xs border border-gray-700">
-                            <code className="font-mono">{block.code}</code>
+                          <pre className="bg-muted/50 backdrop-blur-sm p-4 rounded-lg overflow-x-auto text-xs border border-border/50">
+                            <code className="font-mono text-foreground">{block.code}</code>
                           </pre>
                           <button
                             onClick={() => copyToClipboard(block.code, index)}
-                            className="absolute top-2 right-2 p-2 bg-gray-800 hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="absolute top-2 right-2 p-2 bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background rounded opacity-0 group-hover:opacity-100 transition-opacity"
                             title="Copy to clipboard"
                           >
                             {copiedIndex === index ? (
