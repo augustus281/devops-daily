@@ -4,24 +4,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   BarChart,
   Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-  LineChart,
-  Line,
 } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import {
   Play,
   Pause,
   RotateCcw,
   Server,
-  Zap,
+  Globe,
+  Network,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -54,19 +51,19 @@ const ALGORITHMS: Record<
 > = {
   'round-robin': {
     name: 'Round Robin',
-    description: 'Each server gets requests in turn, one after another',
+    description: 'Distributes requests sequentially across all servers in a circular order',
   },
   'least-connections': {
     name: 'Least Connections',
-    description: 'Sends requests to the server handling the fewest connections',
+    description: 'Routes traffic to the server with the fewest active connections',
   },
   'ip-hash': {
     name: 'IP Hash',
-    description: 'Same client always goes to the same server (sticky sessions)',
+    description: 'Uses client IP hash to maintain session affinity (sticky sessions)',
   },
   random: {
     name: 'Random',
-    description: 'Picks a random server for each request',
+    description: 'Randomly distributes requests across available servers',
   },
 };
 
@@ -109,21 +106,21 @@ export default function LoadBalancerSimulator() {
   const [servers, setServers] = useState<ServerConfig[]>([
     {
       id: 'server-1',
-      name: 'S1',
+      name: 'Server 1',
       activeConnections: 0,
       totalRequests: 0,
       color: SERVER_COLORS[0],
     },
     {
       id: 'server-2',
-      name: 'S2',
+      name: 'Server 2',
       activeConnections: 0,
       totalRequests: 0,
       color: SERVER_COLORS[1],
     },
     {
       id: 'server-3',
-      name: 'S3',
+      name: 'Server 3',
       activeConnections: 0,
       totalRequests: 0,
       color: SERVER_COLORS[2],
@@ -222,7 +219,7 @@ export default function LoadBalancerSimulator() {
 
     const interval = setInterval(() => {
       generateRequest();
-    }, 600);
+    }, 400);
 
     return () => clearInterval(interval);
   }, [isRunning, generateRequest]);
@@ -306,24 +303,67 @@ export default function LoadBalancerSimulator() {
           <CardTitle className="text-lg">Live Traffic Flow</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative bg-muted/30 rounded-lg p-8 h-[400px] overflow-hidden">
-            {/* Client Icon */}
-            <div className="absolute left-8 top-1/2 -translate-y-1/2 z-10">
+          <div className="relative bg-gradient-to-br from-blue-50 to-green-50 dark:from-slate-900 dark:to-slate-800 rounded-lg p-8 h-[500px] overflow-hidden">
+            {/* Dashed Connection Lines */}
+            <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
+              {/* Internet to Load Balancer */}
+              <line
+                x1="15%"
+                y1="50%"
+                x2="50%"
+                y2="50%"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeDasharray="5,5"
+                className="text-muted-foreground"
+              />
+              {/* Load Balancer to Servers */}
+              {[20, 50, 80].map((yPercent, idx) => (
+                <line
+                  key={idx}
+                  x1="50%"
+                  y1="50%"
+                  x2="85%"
+                  y2={`${yPercent}%`}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                  className="text-muted-foreground"
+                />
+              ))}
+            </svg>
+
+            {/* Internet Icon */}
+            <div className="absolute left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
               <div className="text-center">
-                <Zap className="h-12 w-12 mx-auto text-blue-500" />
-                <div className="text-xs mt-2 font-medium">Clients</div>
+                <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
+                  <Globe className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-xs mt-2 font-medium">Internet</div>
+              </div>
+            </div>
+
+            {/* Load Balancer Icon */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+              <div className="text-center">
+                <div className="w-20 h-20 rounded-lg bg-purple-500 flex items-center justify-center shadow-lg">
+                  <Network className="h-10 w-10 text-white" />
+                </div>
+                <div className="text-xs mt-2 font-medium">Load Balancer</div>
+                <div className="text-xs text-muted-foreground">{ALGORITHMS[algorithm].name}</div>
               </div>
             </div>
 
             {/* Servers */}
-            <div className="absolute right-8 top-0 bottom-0 flex flex-col justify-around py-12 z-10">
-              {servers.map((server, idx) => (
+            <div className="absolute right-[85%] top-0 bottom-0 flex flex-col justify-around py-8 z-10" style={{ transform: 'translateX(50%)' }}>
+              {servers.map((server) => (
                 <div key={server.id} className="text-center">
                   <div
-                    className="w-16 h-16 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg"
+                    className="w-16 h-16 rounded-lg flex flex-col items-center justify-center text-white shadow-lg"
                     style={{ backgroundColor: server.color }}
                   >
-                    {server.name}
+                    <Server className="h-6 w-6" />
+                    <div className="text-xs font-medium mt-1">{server.name.replace('Server ', '')}</div>
                   </div>
                   <div className="text-xs mt-2">
                     <div className="font-medium">{server.totalRequests} requests</div>
@@ -342,26 +382,40 @@ export default function LoadBalancerSimulator() {
                 .map((req) => {
                   const targetIndex = servers.findIndex((s) => s.id === req.targetServerId);
                   const clientColorIndex = parseInt(req.clientId.split('-')[1]);
-                  
-                  // Fixed positions for 3 servers in 400px container
-                  const serverYPositions = [80, 200, 320];
-                  const targetY = serverYPositions[targetIndex] || 200;
-                  
+                  const serverYPercents = [20, 50, 80];
+                  const targetYPercent = serverYPercents[targetIndex] || 50;
+                  const color = CLIENT_COLORS[clientColorIndex % CLIENT_COLORS.length];
+
                   return (
-                    <motion.div
-                      key={req.id}
-                      initial={{ left: 100, top: 200 }}
-                      animate={{
-                        left: 'calc(100% - 100px)',
-                        top: targetY,
-                      }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      transition={{ duration: 0.8, ease: 'linear' }}
+                    <React.Fragment key={req.id}>
+                      {/* Stage 1: Internet to Load Balancer */}
+                      <motion.div
+                        initial={{ left: '15%', top: '50%', opacity: 1 }}
+                        animate={{ left: '50%', top: '50%', opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.4, ease: 'easeInOut' }}
+                        className="absolute w-3 h-3 rounded-full shadow-lg"
+                        style={{
+                          backgroundColor: color,
+                          transform: 'translate(-50%, -50%)',
+                          zIndex: 20,
+                        }}
+                      />
+                      
+                      {/* Stage 2: Load Balancer to Server */}
+                      <motion.div
+                      initial={{ left: '50%', top: '50%', opacity: 0 }}
+                      animate={{ left: '85%', top: `${targetYPercent}%`, opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5, delay: 0.4, ease: 'easeInOut' }}
                       className="absolute w-3 h-3 rounded-full shadow-lg"
                       style={{
-                        backgroundColor: CLIENT_COLORS[clientColorIndex % CLIENT_COLORS.length],
+                        backgroundColor: color,
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 20,
                       }}
                     />
+                    </React.Fragment>
                   );
                 })}
             </AnimatePresence>
