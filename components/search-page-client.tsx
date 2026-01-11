@@ -47,7 +47,6 @@ import {
   createSearchIndex,
   searchWithFuse,
   extractFiltersFromItems,
-  highlightMatches,
   getSuggestions,
   TYPE_LABELS,
   TYPE_COLORS,
@@ -476,26 +475,15 @@ function SearchResultCard({ result, index }: { result: SearchResult; index: numb
                     {result.category}
                   </Badge>
                 )}
-                {result.score !== undefined && (
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {Math.round((1 - result.score) * 100)}% match
-                  </span>
-                )}
               </div>
 
-              <h3
-                className="font-semibold text-lg group-hover:text-primary transition-colors truncate"
-                dangerouslySetInnerHTML={{
-                  __html: highlightMatches(result.title, result.matches),
-                }}
-              />
+              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors truncate">
+                {result.title}
+              </h3>
 
-              <p
-                className="text-muted-foreground text-sm line-clamp-2 mt-1"
-                dangerouslySetInnerHTML={{
-                  __html: highlightMatches(result.description, result.matches),
-                }}
-              />
+              <p className="text-muted-foreground text-sm line-clamp-2 mt-1">
+                {result.description}
+              </p>
 
               {/* Tags */}
               {result.tags && result.tags.length > 0 && (

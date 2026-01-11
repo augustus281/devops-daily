@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/ui/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { CommandPalette } from '@/components/command-palette';
 import { cn } from '@/lib/utils';
 import {
   Menu,
@@ -36,6 +35,7 @@ import {
   Calendar,
   Gift,
   ListChecks,
+  Search,
 } from 'lucide-react';
 
 interface NavItem {
@@ -496,6 +496,13 @@ export function Header() {
 
         {/* Mobile menu button */}
         <div className="flex lg:hidden">
+          <Link
+            href="/search"
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Search"
+          >
+            <Search className="w-5 h-5" />
+          </Link>
           <Button variant="ghost" size="sm" onClick={() => setMobileMenuOpen(true)} className="p-2">
             <span className="sr-only">Open main menu</span>
             <Menu className="w-5 h-5" aria-hidden="true" />
@@ -535,7 +542,13 @@ export function Header() {
 
         {/* Right side */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-3">
-          <CommandPalette />
+          <Link
+            href="/search"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground bg-muted/50 hover:bg-muted rounded-lg transition-colors border border-border/50 hover:border-border"
+          >
+            <Search className="w-4 h-4" />
+            <span>Search...</span>
+          </Link>
           <ThemeToggle />
         </div>
       </nav>
