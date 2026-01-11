@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Fuse from 'fuse.js';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
   BookOpen,
@@ -434,12 +433,10 @@ export function SearchPageClient() {
 
           {/* Results Grid */}
           {results.length > 0 && (
-            <div className="grid gap-4">
-              <AnimatePresence mode="popLayout">
-                {results.map((result, index) => (
-                  <SearchResultCard key={result.id} result={result} index={index} />
-                ))}
-              </AnimatePresence>
+            <div className="grid gap-3">
+              {results.map((result) => (
+                <SearchResultCard key={result.id} result={result} />
+              ))}
             </div>
           )}
         </>
@@ -448,67 +445,60 @@ export function SearchPageClient() {
   );
 }
 
-function SearchResultCard({ result, index }: { result: SearchResult; index: number }) {
+function SearchResultCard({ result }: { result: SearchResult }) {
   const Icon = TYPE_ICONS[result.type] || FileText;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ delay: index * 0.05 }}
-    >
-      <Link href={result.url}>
-        <div className="group p-4 rounded-xl border bg-card hover:bg-muted/50 hover:border-primary/50 transition-all">
-          <div className="flex items-start gap-4">
-            {/* Icon */}
-            <div className={`p-3 rounded-lg border shrink-0 ${TYPE_COLORS[result.type]}`}>
-              <Icon className="w-5 h-5" />
-            </div>
+    <Link href={result.url}>
+      <div className="group p-4 rounded-xl border bg-card hover:bg-muted/50 hover:border-primary/50 transition-colors">
+        <div className="flex items-start gap-4">
+          {/* Icon */}
+          <div className={`p-3 rounded-lg border shrink-0 ${TYPE_COLORS[result.type]}`}>
+            <Icon className="w-5 h-5" />
+          </div>
 
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="secondary" className="text-xs">
-                  {TYPE_LABELS[result.type]}
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="secondary" className="text-xs">
+                {TYPE_LABELS[result.type]}
+              </Badge>
+              {result.category && (
+                <Badge variant="outline" className="text-xs">
+                  {result.category}
                 </Badge>
-                {result.category && (
-                  <Badge variant="outline" className="text-xs">
-                    {result.category}
-                  </Badge>
-                )}
-              </div>
-
-              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors truncate">
-                {result.title}
-              </h3>
-
-              <p className="text-muted-foreground text-sm line-clamp-2 mt-1">
-                {result.description}
-              </p>
-
-              {/* Tags */}
-              {result.tags && result.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {result.tags.slice(0, 5).map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                  {result.tags.length > 5 && (
-                    <span className="text-xs text-muted-foreground">
-                      +{result.tags.length - 5} more
-                    </span>
-                  )}
-                </div>
               )}
             </div>
+
+            <h3 className="font-semibold text-lg group-hover:text-primary transition-colors truncate">
+              {result.title}
+            </h3>
+
+            <p className="text-muted-foreground text-sm line-clamp-2 mt-1">
+              {result.description}
+            </p>
+
+            {/* Tags */}
+            {result.tags && result.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {result.tags.slice(0, 5).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+                {result.tags.length > 5 && (
+                  <span className="text-xs text-muted-foreground">
+                    +{result.tags.length - 5} more
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
-      </Link>
-    </motion.div>
+      </div>
+    </Link>
   );
 }
