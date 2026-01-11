@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Fuse from 'fuse.js';
@@ -66,6 +66,7 @@ const TYPE_ICONS: Record<string, React.ElementType> = {
 export function SearchPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [searchIndex, setSearchIndex] = useState<SearchItem[]>([]);
   const [fuse, setFuse] = useState<Fuse<SearchItem> | null>(null);
@@ -75,6 +76,8 @@ export function SearchPageClient() {
   const [showFilters, setShowFilters] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [suggestionIndex, setSuggestionIndex] = useState(-1);
 
   // Load search index on mount
   useEffect(() => {
@@ -185,8 +188,68 @@ export function SearchPageClient() {
   const selectSuggestion = (suggestion: string) => {
     setQuery(suggestion);
     setShowSuggestions(false);
+    setSuggestionIndex(-1);
     updateURL(suggestion, filters);
   };
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      // Handle suggestions navigation when suggestions are visible
+      if (showSuggestions && suggestions.length > 0) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setSuggestionIndex((prev) =>
+            prev < suggestions.length - 1 ? prev + 1 : prev
+          );
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setSuggestionIndex((prev) => (prev > 0 ? prev - 1 : -1));
+        } else if (e.key === 'Enter' && suggestionIndex >= 0) {
+          e.preventDefault();
+          selectSuggestion(suggestions[suggestionIndex]);
+          return;
+        } else if (e.key === 'Escape') {
+          setShowSuggestions(false);
+          setSuggestionIndex(-1);
+          return;
+        }
+      }
+
+      // Handle results navigation when no suggestions visible
+      if (!showSuggestions && results.length > 0) {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setSelectedIndex((prev) =>
+            prev < results.length - 1 ? prev + 1 : prev
+          );
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+          if (selectedIndex === 0) {
+            inputRef.current?.focus();
+          }
+        } else if (e.key === 'Enter' && selectedIndex >= 0) {
+          e.preventDefault();
+          router.push(results[selectedIndex].url);
+        } else if (e.key === 'Escape') {
+          setSelectedIndex(-1);
+          inputRef.current?.focus();
+        }
+      }
+    },
+    [showSuggestions, suggestions, suggestionIndex, results, selectedIndex, router, selectSuggestion]
+  );
+
+  // Reset selected index when results change
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [results]);
+
+  // Reset suggestion index when suggestions change
+  useEffect(() => {
+    setSuggestionIndex(-1);
+  }, [suggestions]);
 
   const hasActiveFilters =
     filters.types.length > 0 ||
@@ -209,10 +272,12 @@ export function SearchPageClient() {
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
+            ref={inputRef}
             type="text"
             placeholder="Search for tutorials, guides, quizzes..."
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
+            onKeyDown={handleKeyDown}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             className="pl-12 pr-12 py-6 text-lg rounded-xl border-2 focus:border-primary"
@@ -236,7 +301,11 @@ export function SearchPageClient() {
                 <button
                   key={index}
                   onClick={() => selectSuggestion(suggestion)}
-                  className="w-full text-left px-3 py-2 hover:bg-muted rounded-lg flex items-center gap-2"
+                  className={`w-full text-left px-3 py-2 rounded-lg flex items-center gap-2 ${
+                    index === suggestionIndex
+                      ? 'bg-primary text-primary-foreground'
+                      : 'hover:bg-muted'
+                  }`}
                 >
                   <Sparkles className="w-4 h-4 text-muted-foreground" />
                   <span>{suggestion}</span>
@@ -420,8 +489,12 @@ export function SearchPageClient() {
           {/* Results Grid */}
           {results.length > 0 && (
             <div className="grid gap-3">
-              {results.map((result) => (
-                <SearchResultCard key={result.id} result={result} />
+              {results.map((result, index) => (
+                <SearchResultCard
+                  key={result.id}
+                  result={result}
+                  isSelected={index === selectedIndex}
+                />
               ))}
             </div>
           )}
@@ -431,12 +504,24 @@ export function SearchPageClient() {
   );
 }
 
-function SearchResultCard({ result }: { result: SearchResult }) {
+function SearchResultCard({
+  result,
+  isSelected,
+}: {
+  result: SearchResult;
+  isSelected: boolean;
+}) {
   const Icon = TYPE_ICONS[result.type] || FileText;
 
   return (
     <Link href={result.url}>
-      <div className="group p-4 rounded-xl border bg-card hover:bg-muted/50 hover:border-primary/50 transition-colors">
+      <div
+        className={`group p-4 rounded-xl border bg-card transition-colors ${
+          isSelected
+            ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+            : 'hover:bg-muted/50 hover:border-primary/50'
+        }`}
+      >
         <div className="flex items-start gap-4">
           {/* Icon */}
           <div className={`p-3 rounded-lg border shrink-0 ${TYPE_COLORS[result.type]}`}>
