@@ -50,6 +50,8 @@ import {
   getSuggestions,
   TYPE_LABELS,
   TYPE_COLORS,
+  POPULAR_SEARCHES,
+  getDidYouMean,
 } from '@/lib/search';
 
 const TYPE_ICONS: Record<string, React.ElementType> = {
@@ -462,17 +464,63 @@ export function SearchPageClient() {
           )}
 
           {query && results.length === 0 && (
-            <div className="text-center py-20">
+            <div className="text-center py-12">
               <Search className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
               <h2 className="text-xl font-semibold mb-2">No results found</h2>
               <p className="text-muted-foreground mb-4">
-                Try different keywords or adjust your filters
+                No matches for &quot;{query}&quot;
               </p>
+
+              {/* Did you mean suggestions */}
+              {(() => {
+                const didYouMean = getDidYouMean(query, searchIndex);
+                if (didYouMean.length > 0) {
+                  return (
+                    <div className="mb-6">
+                      <p className="text-sm text-muted-foreground mb-2">Did you mean:</p>
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {didYouMean.map((term) => (
+                          <Button
+                            key={term}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleQueryChange(term)}
+                            className="gap-1"
+                          >
+                            <Sparkles className="w-3 h-3" />
+                            {term}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
               {hasActiveFilters && (
-                <Button variant="outline" onClick={clearFilters}>
+                <Button variant="outline" onClick={clearFilters} className="mb-6">
                   Clear filters
                 </Button>
               )}
+
+              {/* Popular searches */}
+              <div className="mt-8 pt-6 border-t">
+                <p className="text-sm text-muted-foreground mb-3">Popular searches:</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {POPULAR_SEARCHES.map((term) => (
+                    <Button
+                      key={term}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleQueryChange(term)}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      {term}
+                    </Button>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

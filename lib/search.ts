@@ -197,3 +197,100 @@ export const TYPE_COLORS: Record<string, string> = {
   page: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20',
   checklist: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20',
 };
+
+// Popular searches for "no results" state
+export const POPULAR_SEARCHES = [
+  'Kubernetes',
+  'Docker',
+  'CI/CD',
+  'Terraform',
+  'AWS',
+  'GitHub Actions',
+  'Linux',
+  'DevOps',
+];
+
+// Find similar/related terms for "did you mean" suggestions
+export function getDidYouMean(query: string, items: SearchItem[]): string[] {
+  if (!query || query.length < 2) {
+    return [];
+  }
+
+  const lowerQuery = query.toLowerCase();
+  const suggestions = new Map<string, number>();
+
+  // Collect all searchable terms
+  const terms = new Set<string>();
+  items.forEach((item) => {
+    // Add title words
+    item.title.split(/\s+/).forEach((word) => {
+      if (word.length >= 3) terms.add(word.toLowerCase());
+    });
+    // Add tags
+    item.tags?.forEach((tag) => terms.add(tag.toLowerCase()));
+    // Add category
+    if (item.category) terms.add(item.category.toLowerCase());
+  });
+
+  // Calculate similarity scores using Levenshtein-like approach
+  terms.forEach((term) => {
+    const similarity = calculateSimilarity(lowerQuery, term);
+    if (similarity > 0.4 && similarity < 1) {
+      // Find the original casing
+      let originalTerm = term;
+      items.forEach((item) => {
+        item.tags?.forEach((tag) => {
+          if (tag.toLowerCase() === term) originalTerm = tag;
+        });
+        if (item.category?.toLowerCase() === term) originalTerm = item.category;
+        item.title.split(/\s+/).forEach((word) => {
+          if (word.toLowerCase() === term) originalTerm = word;
+        });
+      });
+      suggestions.set(originalTerm, similarity);
+    }
+  });
+
+  // Sort by similarity and return top 3
+  return [...suggestions.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([term]) => term);
+}
+
+// Simple similarity calculation (normalized edit distance)
+function calculateSimilarity(str1: string, str2: string): number {
+  const len1 = str1.length;
+  const len2 = str2.length;
+
+  // Quick checks
+  if (len1 === 0 || len2 === 0) return 0;
+  if (str1 === str2) return 1;
+
+  // Check if one contains the other
+  if (str1.includes(str2) || str2.includes(str1)) {
+    return 0.8;
+  }
+
+  // Check common prefix
+  let commonPrefix = 0;
+  const minLen = Math.min(len1, len2);
+  for (let i = 0; i < minLen; i++) {
+    if (str1[i] === str2[i]) commonPrefix++;
+    else break;
+  }
+
+  if (commonPrefix >= 3) {
+    return 0.5 + (commonPrefix / Math.max(len1, len2)) * 0.3;
+  }
+
+  // Simple character overlap
+  const chars1 = new Set(str1.split(''));
+  const chars2 = new Set(str2.split(''));
+  let overlap = 0;
+  chars1.forEach((char) => {
+    if (chars2.has(char)) overlap++;
+  });
+
+  return overlap / Math.max(chars1.size, chars2.size);
+}
