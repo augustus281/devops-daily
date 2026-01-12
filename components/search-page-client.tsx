@@ -357,6 +357,8 @@ export function SearchPageClient() {
               <SelectItem value="relevance">Relevance</SelectItem>
               <SelectItem value="title">Title A-Z</SelectItem>
               <SelectItem value="type">Content Type</SelectItem>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="oldest">Oldest First</SelectItem>
             </SelectContent>
           </Select>
         </div>

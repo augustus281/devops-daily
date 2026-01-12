@@ -17,6 +17,7 @@ interface SearchItem {
   category?: string;
   tags?: string[];
   icon?: string;
+  date?: string;
 }
 
 // Static pages
@@ -36,6 +37,7 @@ const PAGES: SearchItem[] = [
     description: 'Browse all blog posts',
     url: '/posts',
     icon: '📝',
+    date: post.date || post.publishedAt,
   },
   {
     id: 'page-guides',
@@ -44,6 +46,7 @@ const PAGES: SearchItem[] = [
     description: 'Comprehensive DevOps guides',
     url: '/guides',
     icon: '📚',
+    date: guide.publishedAt,
   },
   {
     id: 'page-exercises',
@@ -76,6 +79,7 @@ const PAGES: SearchItem[] = [
     description: 'Latest DevOps news and updates',
     url: '/news',
     icon: '📰',
+      date: item.date || item.publishedAt,
   },
   {
     id: 'page-roadmap',
@@ -181,6 +185,7 @@ async function generateSearchIndex() {
     category: post.category?.name,
     tags: post.tags,
     icon: '📝',
+    date: post.date || post.publishedAt,
   }));
   searchIndex.push(...postItems);
   console.log(`  ✓ Added ${postItems.length} posts (limited to 1000 most recent)`);
@@ -196,6 +201,7 @@ async function generateSearchIndex() {
     url: `/guides/${guide.slug}`,
     category: guide.category?.name,
     icon: '📚',
+    date: guide.publishedAt,
   }));
   searchIndex.push(...guideItems);
   console.log(`  ✓ Added ${guideItems.length} guides`);
@@ -234,6 +240,7 @@ async function generateSearchIndex() {
       url: `/news/${item.slug}`,
       category: 'News',
       icon: '📰',
+      date: item.date || item.publishedAt,
     }));
     searchIndex.push(...newsItems);
     console.log(`  ✓ Added ${newsItems.length} news items (limited to 50 most recent)`);

@@ -9,6 +9,7 @@ export interface SearchItem {
   category?: string;
   tags?: string[];
   icon?: string;
+  date?: string;
 }
 
 export interface SearchResult extends SearchItem {
@@ -20,7 +21,7 @@ export interface SearchFilters {
   types: string[];
   categories: string[];
   tags: string[];
-  sortBy: 'relevance' | 'title' | 'type';
+  sortBy: 'relevance' | 'title' | 'type' | 'newest' | 'oldest';
 }
 
 export const DEFAULT_FILTERS: SearchFilters = {
@@ -90,6 +91,18 @@ export function searchWithFuse(
     results.sort((a, b) => a.title.localeCompare(b.title));
   } else if (filters.sortBy === 'type') {
     results.sort((a, b) => a.type.localeCompare(b.type));
+  } else if (filters.sortBy === 'newest') {
+    results.sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateB - dateA;
+    });
+  } else if (filters.sortBy === 'oldest') {
+    results.sort((a, b) => {
+      const dateA = a.date ? new Date(a.date).getTime() : 0;
+      const dateB = b.date ? new Date(b.date).getTime() : 0;
+      return dateA - dateB;
+    });
   }
   // 'relevance' sorting is already applied by Fuse.js
 
