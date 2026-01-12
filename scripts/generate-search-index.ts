@@ -6,16 +6,18 @@ import { getAllGuides } from '../lib/guides.js';
 import { getAllExercises } from '../lib/exercises.js';
 import { getAllNews } from '../lib/news.js';
 import { getActiveGames } from '../lib/games.js';
+import { checklists } from '../data/checklists/index.js';
 
 interface SearchItem {
   id: string;
-  type: 'post' | 'guide' | 'exercise' | 'quiz' | 'game' | 'news' | 'page';
+  type: 'post' | 'guide' | 'exercise' | 'quiz' | 'game' | 'news' | 'page' | 'checklist';
   title: string;
   description: string;
   url: string;
   category?: string;
   tags?: string[];
   icon?: string;
+  date?: string;
 }
 
 // Static pages
@@ -100,6 +102,14 @@ const PAGES: SearchItem[] = [
     url: '/categories',
     icon: '📑',
   },
+  {
+    id: 'page-checklists',
+    type: 'page',
+    title: 'Checklists',
+    description: 'Interactive DevOps and security checklists',
+    url: '/checklists',
+    icon: '✅',
+  },
 ];
 
 // Quizzes (load from filesystem)
@@ -172,6 +182,7 @@ async function generateSearchIndex() {
     category: post.category?.name,
     tags: post.tags,
     icon: '📝',
+    date: post.date || post.publishedAt,
   }));
   searchIndex.push(...postItems);
   console.log(`  ✓ Added ${postItems.length} posts (limited to 1000 most recent)`);
@@ -187,6 +198,7 @@ async function generateSearchIndex() {
     url: `/guides/${guide.slug}`,
     category: guide.category?.name,
     icon: '📚',
+    date: guide.publishedAt,
   }));
   searchIndex.push(...guideItems);
   console.log(`  ✓ Added ${guideItems.length} guides`);
@@ -225,12 +237,28 @@ async function generateSearchIndex() {
       url: `/news/${item.slug}`,
       category: 'News',
       icon: '📰',
+      date: item.date || item.publishedAt,
     }));
     searchIndex.push(...newsItems);
     console.log(`  ✓ Added ${newsItems.length} news items (limited to 50 most recent)`);
   } catch (error) {
     console.log('  ⚠️ Could not load news items');
   }
+
+  // Add checklists
+  console.log('✅ Adding checklists...');
+  const checklistItems: SearchItem[] = checklists.map((checklist) => ({
+    id: `checklist-${checklist.slug}`,
+    type: 'checklist',
+    title: checklist.title,
+    description: checklist.description,
+    url: `/checklists/${checklist.slug}`,
+    category: checklist.category,
+    tags: checklist.tags,
+    icon: '✅',
+  }));
+  searchIndex.push(...checklistItems);
+  console.log(`  ✓ Added ${checklistItems.length} checklists`);
 
   // Calculate size
   const json = JSON.stringify(searchIndex);
