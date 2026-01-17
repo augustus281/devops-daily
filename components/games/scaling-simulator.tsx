@@ -726,6 +726,59 @@ export default function ScalingSimulator() {
               <p className="text-sm text-muted-foreground">
                 Upgrade individual server specs. Note: Upgrades require ~30s downtime.
               </p>
+
+              {/* Pricing Reference */}
+              <div className="p-4 rounded-lg bg-muted/30 border">
+                <h4 className="font-medium flex items-center gap-2 mb-3">
+                  <DollarSign className="h-4 w-4" />
+                  Pricing Reference (Monthly)
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <div className="text-muted-foreground mb-1 flex items-center gap-1">
+                      <Cpu className="h-3 w-3" /> CPU Cores
+                    </div>
+                    <div className="space-y-0.5 font-mono text-xs">
+                      <div className="flex justify-between"><span>2 cores</span><span>$15</span></div>
+                      <div className="flex justify-between"><span>4 cores</span><span>$30</span></div>
+                      <div className="flex justify-between"><span>8 cores</span><span>$60</span></div>
+                      <div className="flex justify-between"><span>16 cores</span><span>$120</span></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground mb-1 flex items-center gap-1">
+                      <Zap className="h-3 w-3" /> RAM
+                    </div>
+                    <div className="space-y-0.5 font-mono text-xs">
+                      <div className="flex justify-between"><span>4 GB</span><span>$10</span></div>
+                      <div className="flex justify-between"><span>8 GB</span><span>$20</span></div>
+                      <div className="flex justify-between"><span>16 GB</span><span>$40</span></div>
+                      <div className="flex justify-between"><span>32 GB</span><span>$80</span></div>
+                      <div className="flex justify-between"><span>64 GB</span><span>$160</span></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground mb-1 flex items-center gap-1">
+                      <HardDrive className="h-3 w-3" /> Disk Type
+                    </div>
+                    <div className="space-y-0.5 font-mono text-xs">
+                      <div className="flex justify-between"><span>HDD</span><span>$5</span></div>
+                      <div className="flex justify-between"><span>SSD</span><span>$15</span></div>
+                      <div className="flex justify-between"><span>NVMe</span><span>$30</span></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground mb-1 flex items-center gap-1">
+                      <Activity className="h-3 w-3" /> Network
+                    </div>
+                    <div className="space-y-0.5 font-mono text-xs">
+                      <div className="flex justify-between"><span>1 Gbps</span><span>$0</span></div>
+                      <div className="flex justify-between"><span>10 Gbps</span><span>$25</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {servers.map((server, index) => (
                 <div
                   key={server.id}
