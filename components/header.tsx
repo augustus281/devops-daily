@@ -36,7 +36,6 @@ import {
   Gift,
   ListChecks,
   Search,
-  GraduationCap,
 } from 'lucide-react';
 
 interface NavItem {
@@ -159,12 +158,6 @@ const dropdownNavigation: Record<string, NavSection[]> = {
           description: 'Your journey to DevOps mastery',
           icon: Map,
           featured: false,
-        },
-        {
-          label: 'Junior Roadmap',
-          href: '/roadmap/junior',
-          description: 'Beginner-friendly learning path',
-          icon: GraduationCap,
         },
         {
         label: 'Quizzes & Tests',

@@ -1739,29 +1739,6 @@ export default function RoadmapPage() {
       {/* Enhanced Hero Section with Animations */}
       <RoadmapHero />
 
-      {/* Junior Roadmap Banner */}
-      <section className="border-b bg-linear-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30">
-        <div className="container px-4 py-4 mx-auto">
-          <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <GraduationCap className="w-5 h-5 text-green-600 dark:text-green-400" />
-              </div>
-              <div>
-                <p className="font-medium">New to DevOps?</p>
-                <p className="text-sm text-muted-foreground">Check out our beginner-friendly roadmap</p>
-              </div>
-            </div>
-            <Button asChild size="sm" variant="outline">
-              <Link href="/roadmap/junior">
-                Junior Roadmap
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Roadmap Timeline */}
       <section id="roadmap" className="py-20">
         <div className="container px-4 mx-auto">
@@ -1776,6 +1753,14 @@ export default function RoadmapPage() {
                 Each stage includes curated resources, hands-on projects, and real-world skills you
                 can practice immediately.
               </p>
+              <Link
+                href="/roadmap/junior"
+                className="inline-flex items-center gap-1.5 mt-4 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <GraduationCap className="w-4 h-4" />
+                New to DevOps? Start with the Junior Roadmap
+                <ArrowRight className="w-3 h-3" />
+              </Link>
             </div>
 
             {/* Desktop Timeline */}
