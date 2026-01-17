@@ -357,7 +357,18 @@ export default function ScalingSimulator() {
       // Auto-scaling logic
       if (scalingConfig.autoScalingEnabled && hasLoadBalancer) {
         const avgCpuUsage = avgLoad * 100;
-        if (avgCpuUsage > scalingConfig.cpuThreshold && healthyServers.length < scalingConfig.maxInstances) {
+
+        // Scale up to meet minimum instances requirement
+        if (healthyServers.length < scalingConfig.minInstances) {
+          if (!scaleUpTimer.current) {
+            scaleUpTimer.current = window.setTimeout(() => {
+              addServer();
+              scaleUpTimer.current = null;
+            }, (scalingConfig.scaleUpDelay * 1000) / speed);
+          }
+        }
+        // Scale up based on CPU threshold
+        else if (avgCpuUsage > scalingConfig.cpuThreshold && healthyServers.length < scalingConfig.maxInstances) {
           if (!scaleUpTimer.current) {
             scaleUpTimer.current = window.setTimeout(() => {
               addServer();
