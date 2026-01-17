@@ -22,6 +22,20 @@ export interface Game {
  */
 const games: Game[] = [
   {
+    id: 'scaling-simulator',
+    title: 'Horizontal vs Vertical Scaling Simulator',
+    description:
+      'Interactive game to learn scaling strategies for web applications. Experiment with horizontal and vertical scaling, see the effects on performance, cost, and reliability with realistic pricing simulation and budget constraints.',
+    iconName: 'TrendingUp',
+    badgeText: 'New',
+    color: 'from-emerald-500 to-teal-600',
+    href: '/games/scaling-simulator',
+    tags: ['scaling', 'infrastructure', 'educational', 'interactive', 'cloud', 'auto-scaling'],
+    isNew: true,
+    featured: true,
+    category: 'Infrastructure',
+  },
+  {
     id: 'load-balancer-simulator',
     title: 'Load Balancer Algorithm Simulator',
     description:
