@@ -913,22 +913,35 @@ export default function ScalingSimulator() {
                     </div>
                   </div>
                 ))}
-               <Button
-                 variant="outline"
-                 className="h-full min-h-[150px] border-dashed"
-                 onClick={addServer}
-                  disabled={servers.length >= scalingConfig.maxInstances}
-               >
-                 <Plus className="h-6 w-6 mr-2" />
-                 Add Server
-                 <Badge variant="secondary" className="ml-2">
-                    {servers.length >= scalingConfig.maxInstances
-                      ? `Max ${scalingConfig.maxInstances}`
-                      : '+$20/mo'}
-                 </Badge>
-               </Button>
-              </div>
-            </TabsContent>
+              <Button
+                variant="outline"
+                className="h-full min-h-[150px] border-dashed"
+                onClick={addServer}
+                 disabled={servers.length >= scalingConfig.maxInstances}
+              >
+                <Plus className="h-6 w-6 mr-2" />
+                Add Server
+                <Badge variant="secondary" className="ml-2">
+                   {servers.length >= scalingConfig.maxInstances
+                     ? `Max ${scalingConfig.maxInstances}`
+                     : '+$20/mo'}
+                </Badge>
+              </Button>
+                {servers.length > 1 && (
+                  <Button
+                    variant="outline"
+                    className="h-full min-h-[150px] border-dashed border-red-500/50 hover:bg-red-500/10"
+                    onClick={() => removeServer(servers[servers.length - 1].id)}
+                  >
+                    <Minus className="h-6 w-6 mr-2" />
+                    Remove Server
+                    <Badge variant="secondary" className="ml-2 bg-red-500/20 text-red-600">
+                      -$20/mo
+                    </Badge>
+                  </Button>
+                )}
+             </div>
+           </TabsContent>
 
             <TabsContent value="auto" className="space-y-4">
               <div className="flex items-center justify-between">
