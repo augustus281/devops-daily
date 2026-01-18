@@ -23,6 +23,22 @@ export interface Game {
 const games: Game[] = [
   {
     id: 'scaling-simulator',
+  {
+    id: 'linux-terminal',
+    title: 'Learn Linux - Interactive Tutorial',
+    description:
+      'Master essential Linux commands through interactive lessons. Practice pwd, ls, cd, cat, grep, chmod, pipes, and more in a simulated terminal environment with 6 progressive lessons.',
+    iconName: 'Terminal',
+    badgeText: 'New',
+    color: 'from-gray-700 to-gray-900',
+    href: '/games/linux-terminal',
+    tags: ['linux', 'terminal', 'educational', 'interactive', 'tutorial', 'beginner'],
+    isNew: true,
+    featured: true,
+    category: 'Educational',
+  },
+  {
+    id: 'scaling-simulator',
     title: 'Horizontal vs Vertical Scaling Simulator',
     description:
       'Interactive game to learn scaling strategies for web applications. Experiment with horizontal and vertical scaling, see the effects on performance, cost, and reliability with realistic pricing simulation and budget constraints.',
