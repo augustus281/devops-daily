@@ -349,7 +349,19 @@ const priorityConfig = {
 
 export default function JuniorDevOpsRoadmap() {
   const [completedSkills, setCompletedSkills] = useState<Set<string>>(new Set());
-  const [activeMilestone, setActiveMilestone] = useState<string | null>(null);
+  const [expandedMilestones, setExpandedMilestones] = useState<Set<string>>(new Set());
+
+  const toggleMilestone = (milestoneId: string) => {
+    setExpandedMilestones((prev) => {
+      const next = new Set(prev);
+      if (next.has(milestoneId)) {
+        next.delete(milestoneId);
+      } else {
+        next.add(milestoneId);
+      }
+      return next;
+    });
+  };
 
   const toggleSkill = (skillName: string) => {
     setCompletedSkills((prev) => {
@@ -503,7 +515,7 @@ export default function JuniorDevOpsRoadmap() {
                   key={milestone.id}
                   className={cn(
                     'relative overflow-hidden transition-all duration-300',
-                    activeMilestone === milestone.id && 'ring-2 ring-primary'
+                    expandedMilestones.has(milestone.id) && 'ring-2 ring-primary'
                   )}
                 >
                   {/* Milestone number indicator */}
@@ -512,7 +524,7 @@ export default function JuniorDevOpsRoadmap() {
                   <CardHeader
                     className="cursor-pointer"
                     onClick={() =>
-                      setActiveMilestone(activeMilestone === milestone.id ? null : milestone.id)
+                      toggleMilestone(milestone.id)
                     }
                   >
                     <div className="flex items-start justify-between">
@@ -538,13 +550,13 @@ export default function JuniorDevOpsRoadmap() {
                       <ChevronRight
                         className={cn(
                           'w-5 h-5 text-muted-foreground transition-transform',
-                          activeMilestone === milestone.id && 'rotate-90'
+                          expandedMilestones.has(milestone.id) && 'rotate-90'
                         )}
                       />
                     </div>
                   </CardHeader>
 
-                  {activeMilestone === milestone.id && (
+                  {expandedMilestones.has(milestone.id) && (
                     <CardContent className="pt-0">
                       {/* Skills */}
                       <div className="mb-6">
