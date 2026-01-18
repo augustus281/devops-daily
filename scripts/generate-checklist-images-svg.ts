@@ -1,7 +1,7 @@
 // scripts/generate-checklist-images-svg.ts
 import fs from 'fs/promises';
 import path from 'path';
-import { checklists } from '../data/checklists/index.js';
+import { checklists } from '../content/checklists/index.js';
 
 // Configuration
 const IMAGE_WIDTH = 1200;

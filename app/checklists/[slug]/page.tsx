@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { checklists, getChecklistBySlug } from '@/data/checklists';
+import { checklists, getChecklistBySlug } from '@/content/checklists';
 import { ChecklistPageClient } from '@/components/checklists/checklist-page-client';
 
 export function generateStaticParams() {
