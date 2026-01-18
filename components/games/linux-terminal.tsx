@@ -258,7 +258,7 @@ const LESSONS: Lesson[] = [
       {
         instruction: 'Navigate into the documents directory.',
         hint: 'Use "cd" followed by the directory name',
-        expectedCommand: 'cd documents',
+        expectedCommand: ['cd documents', 'cd documents/', 'cd ./documents', 'cd ./documents/'],
         explanation: 'The cd command changes your current directory. You can use relative paths (from current location) or absolute paths (from /).',
       },
       {
