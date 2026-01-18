@@ -6,7 +6,7 @@ import { getAllGuides } from '../lib/guides.js';
 import { getAllExercises } from '../lib/exercises.js';
 import { getAllNews } from '../lib/news.js';
 import { getActiveGames } from '../lib/games.js';
-import { checklists } from '../data/checklists/index.js';
+import { checklists } from '../content/checklists/index.js';
 
 interface SearchItem {
   id: string;

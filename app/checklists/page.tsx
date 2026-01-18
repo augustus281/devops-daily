@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { checklists } from '@/data/checklists';
+import { checklists } from '@/content/checklists';
 import { ChecklistsHero } from '@/components/checklists/checklists-hero';
 import { ChecklistsList } from '@/components/checklists/checklists-list';
 
