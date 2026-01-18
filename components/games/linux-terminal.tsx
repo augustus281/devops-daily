@@ -1185,6 +1185,136 @@ Swap:       2097152           0     2097152`;
 
   // Handle keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    // Ctrl+C - cancel current input
+    if (e.ctrlKey && e.key === 'c') {
+      e.preventDefault();
+      if (inputValue.trim()) {
+        setTerminalHistory(prev => [
+          ...prev,
+          { type: 'input', content: `$ ${inputValue}^C`, timestamp: new Date() }
+        ]);
+      } else {
+        setTerminalHistory(prev => [
+          ...prev,
+          { type: 'output', content: '^C', timestamp: new Date() }
+        ]);
+      }
+      setInputValue('');
+      setHistoryIndex(-1);
+      return;
+    }
+
+    // Tab - autocomplete
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      
+      const parts = inputValue.trimStart().split(/\s+/);
+      const isTypingCommand = parts.length === 1;
+      const partialInput = parts[parts.length - 1] || '';
+      
+      // Available commands
+      const AVAILABLE_COMMANDS = [
+        'pwd', 'ls', 'cd', 'cat', 'touch', 'mkdir', 'cp', 'mv', 'rm',
+        'head', 'tail', 'grep', 'wc', 'find', 'chmod', 'whoami', 'hostname',
+        'df', 'free', 'env', 'printenv', 'echo', 'clear', 'help'
+      ];
+      
+      if (isTypingCommand) {
+        // Autocomplete command
+        const matches = AVAILABLE_COMMANDS.filter(cmd => 
+          cmd.startsWith(partialInput.toLowerCase())
+        );
+        
+        if (matches.length === 1) {
+          setInputValue(matches[0] + ' ');
+        } else if (matches.length > 1) {
+          // Show available completions
+          setTerminalHistory(prev => [
+            ...prev,
+            { type: 'input', content: `$ ${inputValue}`, timestamp: new Date() },
+            { type: 'output', content: matches.join('  '), timestamp: new Date() }
+          ]);
+        }
+      } else {
+        // Autocomplete path/file
+        const prefix = parts.slice(0, -1).join(' ');
+        let dirPath = currentPath;
+        let searchPrefix = partialInput;
+        
+        // Handle path with directory component
+        if (partialInput.includes('/')) {
+          const lastSlash = partialInput.lastIndexOf('/');
+          const pathPart = partialInput.slice(0, lastSlash) || '/';
+          searchPrefix = partialInput.slice(lastSlash + 1);
+          
+          // Resolve the directory path
+          if (pathPart.startsWith('/')) {
+            dirPath = pathPart;
+          } else if (pathPart.startsWith('~')) {
+            dirPath = `/home/user${pathPart.slice(1)}`;
+          } else {
+            const pathParts = currentPath.split('/').filter(Boolean);
+            const inputParts = pathPart.split('/').filter(Boolean);
+            for (const part of inputParts) {
+              if (part === '..') {
+                pathParts.pop();
+              } else if (part !== '.') {
+                pathParts.push(part);
+              }
+            }
+            dirPath = '/' + pathParts.join('/');
+          }
+        }
+        
+        // Get directory contents
+        const node = getNode(dirPath);
+        if (node && node.type === 'directory' && node.children) {
+          const matches = Object.keys(node.children).filter(name =>
+            name.startsWith(searchPrefix)
+          ).map(name => {
+            const child = node.children![name];
+            return child.type === 'directory' ? name + '/' : name;
+          });
+          
+          if (matches.length === 1) {
+            // Reconstruct the path
+            let completedPath = matches[0];
+            if (partialInput.includes('/')) {
+              const lastSlash = partialInput.lastIndexOf('/');
+              completedPath = partialInput.slice(0, lastSlash + 1) + matches[0];
+            }
+            setInputValue(prefix + ' ' + completedPath);
+          } else if (matches.length > 1) {
+            // Find common prefix for partial completion
+            let commonPrefix = matches[0];
+            for (const match of matches) {
+              while (!match.startsWith(commonPrefix)) {
+                commonPrefix = commonPrefix.slice(0, -1);
+              }
+            }
+            
+            if (commonPrefix.length > searchPrefix.length) {
+              // Complete to common prefix
+              let completedPath = commonPrefix;
+              if (partialInput.includes('/')) {
+                const lastSlash = partialInput.lastIndexOf('/');
+                completedPath = partialInput.slice(0, lastSlash + 1) + commonPrefix;
+              }
+              setInputValue(prefix + ' ' + completedPath);
+            } else {
+              // Show available completions
+              setTerminalHistory(prev => [
+                ...prev,
+                { type: 'input', content: `$ ${inputValue}`, timestamp: new Date() },
+                { type: 'output', content: matches.join('  '), timestamp: new Date() }
+              ]);
+            }
+          }
+        }
+      }
+      return;
+    }
+
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (historyIndex < commandHistory.length - 1) {
@@ -1203,7 +1333,7 @@ Swap:       2097152           0     2097152`;
         setInputValue('');
       }
     }
-  }, [commandHistory, historyIndex]);
+  }, [commandHistory, historyIndex, inputValue, currentPath, getNode]);
 
   // Reset all progress
   const resetProgress = useCallback(() => {
