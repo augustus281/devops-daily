@@ -36,6 +36,20 @@ const games: Game[] = [
     category: 'Infrastructure',
   },
   {
+    id: 'linux-terminal',
+    title: 'Learn Linux - Interactive Tutorial',
+    description:
+      'Master essential Linux commands through interactive lessons. Practice pwd, ls, cd, cat, grep, chmod, pipes, and more in a simulated terminal environment with 6 progressive lessons.',
+    iconName: 'Terminal',
+    badgeText: 'New',
+    color: 'from-gray-700 to-gray-900',
+    href: '/games/linux-terminal',
+    tags: ['linux', 'terminal', 'educational', 'interactive', 'tutorial', 'beginner'],
+    isNew: true,
+    featured: true,
+    category: 'Educational',
+  },
+  {
     id: 'load-balancer-simulator',
     title: 'Load Balancer Algorithm Simulator',
     description:
