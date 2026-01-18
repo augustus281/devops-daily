@@ -95,6 +95,7 @@ const milestones: DevSecOpsMilestone[] = [
         icon: Shield,
         priority: 'essential',
         estimatedHours: 15,
+        link: '/guides/security-principles',
       },
       {
         name: 'OWASP Top 10',
