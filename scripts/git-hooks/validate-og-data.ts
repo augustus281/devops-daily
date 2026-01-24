@@ -103,8 +103,11 @@ function ogImageExists(slug: string, imagesDir: string): boolean {
   const imageDir = path.join(PUBLIC_IMAGES_DIR, imagesDir);
   const svgPath = path.join(imageDir, `${slug}.svg`);
   const pngPath = path.join(imageDir, `${slug}.png`);
+  // Also check for -og suffix pattern (used by some content types like checklists)
+  const svgPathOg = path.join(imageDir, `${slug}-og.svg`);
+  const pngPathOg = path.join(imageDir, `${slug}-og.png`);
 
-  return fs.existsSync(svgPath) || fs.existsSync(pngPath);
+  return fs.existsSync(svgPath) || fs.existsSync(pngPath) || fs.existsSync(svgPathOg) || fs.existsSync(pngPathOg);
 }
 
 function parseMarkdownFrontmatter(
