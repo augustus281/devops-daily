@@ -8,6 +8,7 @@ const POSTS_IMAGES_DIR = path.join(PUBLIC_DIR, 'images', 'posts');
 const GUIDES_IMAGES_DIR = path.join(PUBLIC_DIR, 'images', 'guides');
 const EXERCISES_IMAGES_DIR = path.join(PUBLIC_DIR, 'images', 'exercises');
 const NEWS_IMAGES_DIR = path.join(PUBLIC_DIR, 'images', 'news');
+const CHECKLISTS_IMAGES_DIR = path.join(PUBLIC_DIR, 'images', 'checklists');
 
 async function convertSvgToPng(svgPath: string, pngPath: string) {
   try {
@@ -47,11 +48,12 @@ async function convertAllSvgImages() {
   console.log('🖼️  Converting SVG images to PNG for social media...');
 
   const directories = [
-    { dir: POSTS_IMAGES_DIR, type: 'posts' },
-    { dir: GUIDES_IMAGES_DIR, type: 'guides' },
-    { dir: EXERCISES_IMAGES_DIR, type: 'exercises' },
-    { dir: NEWS_IMAGES_DIR, type: 'news' },
-  ];
+   { dir: POSTS_IMAGES_DIR, type: 'posts' },
+   { dir: GUIDES_IMAGES_DIR, type: 'guides' },
+   { dir: EXERCISES_IMAGES_DIR, type: 'exercises' },
+   { dir: NEWS_IMAGES_DIR, type: 'news' },
+    { dir: CHECKLISTS_IMAGES_DIR, type: 'checklists' },
+ ];
 
   for (const { dir, type } of directories) {
     try {
