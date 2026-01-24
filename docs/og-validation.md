@@ -49,11 +49,13 @@ Each content file should have a corresponding OG image:
 ```
 content/posts/my-post.md       → public/images/posts/my-post.svg (or .png)
 content/guides/my-guide.md     → public/images/guides/my-guide.svg (or .png)
-content/checklists/foo.json    → public/images/checklists/foo.svg (or .png)
+content/checklists/foo.json    → public/images/checklists/foo.svg (or .png) OR foo-og.svg
 content/news/2025/week-1.md    → public/images/news/week-1.svg (or .png)
 ```
 
 SVG is preferred for smaller file sizes, but PNG is also supported.
+
+**Note:** The validator also accepts the `-og` suffix pattern (e.g., `foo-og.svg` instead of `foo.svg`). This is used by some content types like checklists.
 
 ## Usage
 
