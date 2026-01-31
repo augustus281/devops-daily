@@ -139,6 +139,13 @@ const getPodPosition = (idx: number): { x: number; y: number } => {
   return { x, y };
 };
 
+// Slower timing for educational purposes
+const REQUEST_INTERVAL_MS = 1000; // Time between new requests
+const PHASE_TO_LB_MS = 300;       // Time to reach load balancer
+const PHASE_TO_POD_MS = 600;      // Time to reach pod after LB
+const REQUEST_CLEANUP_MS = 900;   // Time before request disappears
+const MAX_CONCURRENT_REQUESTS = 3; // Fewer concurrent requests for clarity
+
 export default function DeploymentStrategiesSimulator() {
   const [strategy, setStrategy] = useState<DeploymentStrategy>('rolling');
   const [isRunning, setIsRunning] = useState(false);
@@ -442,7 +449,7 @@ export default function DeploymentStrategiesSimulator() {
 
       const packetId = `req-${Date.now()}-${Math.random()}`;
       setRequests((prev) => [
-        ...prev.slice(-8),
+        ...prev.slice(-(MAX_CONCURRENT_REQUESTS - 1)),
         {
           id: packetId,
           targetPod: targetPod.id,
@@ -465,7 +472,7 @@ export default function DeploymentStrategiesSimulator() {
             r.id === packetId ? { ...r, phase: 'to-pod' as const } : r
           )
         );
-      }, 150);
+      }, PHASE_TO_LB_MS);
 
       setTimeout(() => {
         setRequests((prev) =>
@@ -473,12 +480,12 @@ export default function DeploymentStrategiesSimulator() {
             r.id === packetId ? { ...r, phase: 'done' as const } : r
           )
         );
-      }, 350);
+      }, PHASE_TO_POD_MS);
 
       setTimeout(() => {
         setRequests((prev) => prev.filter((r) => r.id !== packetId));
-      }, 500);
-    }, 350);
+      }, REQUEST_CLEANUP_MS);
+    }, REQUEST_INTERVAL_MS);
 
     return () => clearInterval(interval);
   }, [isRunning, pods, strategy, blueGreenActive, canaryPercentage]);
@@ -627,22 +634,16 @@ export default function DeploymentStrategiesSimulator() {
               strokeWidth="2"
               strokeDasharray="4"
             />
-            {/* LB to pods - use same getPodPosition function */}
-            {pods.map((pod, idx) => {
-              const pos = getPodPosition(idx);
-              return (
-                <line
-                  key={pod.id}
-                  x1="27%"
-                  y1="50%"
-                  x2={`${pos.x}%`}
-                  y2={`${pos.y}%`}
-                  stroke={pod.version === 'v1' ? '#3b82f6' : '#22c55e'}
-                  strokeWidth="1"
-                  strokeOpacity="0.3"
-                />
-              );
-            })}
+            {/* LB to pods area - simplified single line */}
+            <line
+              x1="27%"
+              y1="50%"
+              x2="40%"
+              y2="50%"
+              stroke="#475569"
+              strokeWidth="2"
+              strokeDasharray="4"
+            />
           </svg>
 
           {/* Pods - positioned using getPodPosition */}
@@ -711,10 +712,10 @@ export default function DeploymentStrategiesSimulator() {
                     opacity: req.phase === 'done' ? 0.3 : 1,
                   }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
-                  className={`absolute w-2 h-2 rounded-full -translate-x-1/2 -translate-y-1/2
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  className={`absolute w-3 h-3 rounded-full -translate-x-1/2 -translate-y-1/2
                     ${req.version === 'v1' ? 'bg-blue-400 shadow-blue-400/50' : 'bg-green-400 shadow-green-400/50'}
-                    shadow-lg`}
+                    shadow-lg ring-2 ring-white/20`}
                 />
               );
             })}
