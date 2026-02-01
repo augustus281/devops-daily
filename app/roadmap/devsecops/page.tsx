@@ -104,15 +104,16 @@ const milestones: DevSecOpsMilestone[] = [
         priority: 'essential',
         estimatedHours: 20,
         link: '/guides/owasp-top-10',
-      },
-      {
-        name: 'Threat Modeling',
-        description: 'Learn STRIDE, DREAD, and attack tree methodologies',
-        icon: Bug,
-        priority: 'important',
-        estimatedHours: 15,
-      },
-      {
+     },
+     {
+       name: 'Threat Modeling',
+       description: 'Learn STRIDE, DREAD, and attack tree methodologies',
+       icon: Bug,
+       priority: 'important',
+       estimatedHours: 15,
+        link: '/guides/threat-modeling',
+     },
+     {
         name: 'Linux Security Basics',
         description: 'File permissions, user management, SSH hardening, and firewall basics',
         link: '/checklists/ssh-hardening',
