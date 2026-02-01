@@ -49,7 +49,7 @@ Automated tools are essential but insufficient. Consider what they miss:
 | Race conditions | Rarely detects | Can identify |
 | Cryptographic misuse | Partial detection | Can identify |
 
-A 2022 study by GitHub found that code review catches approximately 60% of security issues that automated tools miss. The combination of both approaches provides the strongest defense.
+Research shows that code review catches a significant percentage of security issues that automated tools miss - some studies estimate 50-70%. The combination of both approaches provides the strongest defense.
 
 ## The Security Reviewer's Mindset
 
