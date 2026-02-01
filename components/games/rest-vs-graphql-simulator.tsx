@@ -23,6 +23,40 @@ import { cn } from '@/lib/utils';
 
 type Scenario = 'user-profile' | 'user-with-posts' | 'user-posts-comments' | 'multiple-resources';
 
+/**
+ * TIMING METHODOLOGY EXPLANATION
+ * ==============================
+ * The simulation models real-world network behavior:
+ *
+ * 1. NETWORK ROUND-TRIP: Each HTTP request requires a full round-trip
+ *    - DNS lookup (~5ms, cached after first)
+ *    - TCP handshake (~15ms)
+ *    - TLS negotiation (~30ms for HTTPS)
+ *    - Server processing (~20-50ms)
+ *    Total: ~80-100ms per request (conservative estimate)
+ *
+ * 2. REST WATERFALL PROBLEM: Sequential requests compound latency
+ *    - Request 1 must complete before Request 2 starts
+ *    - N requests = N * round-trip time
+ *    - Example: 5 requests * 100ms = 500ms total
+ *
+ * 3. GRAPHQL SINGLE REQUEST: All data in one round-trip
+ *    - One round-trip (~100ms) + query parsing overhead (~15ms)
+ *    - Same data fetched in 115ms vs 500ms
+ *
+ * 4. PAYLOAD SIZE: Based on typical API responses
+ *    - REST returns full objects (e.g., user with 20 fields)
+ *    - GraphQL returns only requested fields (e.g., 4 fields)
+ *    - Size difference: 2-8x smaller payloads
+ *
+ * Sources: HTTP/2 performance studies, Akamai latency reports,
+ * Apollo GraphQL performance benchmarks
+ */
+const NETWORK_CONSTANTS = {
+  ROUND_TRIP_MS: 100,  // Conservative estimate for API round-trip
+  GRAPHQL_PARSING_MS: 15,  // Query parsing overhead
+};
+
 interface RequestLog {
   id: string;
   method: string;
@@ -176,6 +210,15 @@ const formatBytes = (bytes: number): string => {
   return `${(bytes / 1024).toFixed(1)} KB`;
 };
 
+// Calculate expected timing based on network round-trips
+const calculateRestTime = (requestCount: number): number => {
+  return requestCount * NETWORK_CONSTANTS.ROUND_TRIP_MS;
+};
+
+const calculateGraphqlTime = (): number => {
+  return NETWORK_CONSTANTS.ROUND_TRIP_MS + NETWORK_CONSTANTS.GRAPHQL_PARSING_MS;
+};
+
 export default function RestVsGraphqlSimulator() {
   const [scenario, setScenario] = useState<Scenario>('user-profile');
   const [isRunning, setIsRunning] = useState(false);
@@ -201,7 +244,8 @@ export default function RestVsGraphqlSimulator() {
     setIsRunning(true);
 
     const restRequests = currentScenario.rest.requests;
-    const baseDelay = 300;
+    // Use network round-trip constant for realistic timing
+    const perRequestDelay = NETWORK_CONSTANTS.ROUND_TRIP_MS;
 
     // Initialize REST logs
     const initialLogs: RequestLog[] = restRequests.map((req, i) => ({
@@ -221,15 +265,16 @@ export default function RestVsGraphqlSimulator() {
     });
 
     // Simulate REST requests sequentially with delays
+    // REST: Waterfall pattern - each request must complete before next starts
     for (let i = 0; i < restRequests.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, baseDelay));
+      await new Promise((resolve) => setTimeout(resolve, perRequestDelay));
       setRestLogs((prev) =>
         prev.map((log, idx) =>
           idx === i
             ? {
                 ...log,
                 status: 'success',
-                duration: baseDelay + Math.random() * 100,
+                duration: perRequestDelay + Math.random() * 20, // Small variance
                 responseSize: Math.floor(currentScenario.rest.totalPayloadSize / restRequests.length),
               }
             : log
@@ -239,13 +284,15 @@ export default function RestVsGraphqlSimulator() {
     setRestComplete(true);
 
     // GraphQL completes faster (single request)
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // GraphQL: Single request completes in one round-trip + parsing overhead
+    const graphqlDuration = calculateGraphqlTime();
+    await new Promise((resolve) => setTimeout(resolve, 50)); // Visual delay for UI
     setGraphqlLog({
       id: 'graphql-0',
       method: 'POST',
       endpoint: '/graphql',
       status: 'success',
-      duration: baseDelay * 0.8,
+      duration: graphqlDuration,
       responseSize: currentScenario.graphql.totalPayloadSize,
     });
     setGraphqlComplete(true);
@@ -383,7 +430,66 @@ export default function RestVsGraphqlSimulator() {
           </div>
         </CardContent>
       </Card>
-
+      
+      {/* How This Simulator Works - Beginner Explanation */}
+      <Card className="bg-gradient-to-br from-blue-500/5 to-purple-500/5 border-blue-500/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Database className="w-5 h-5 text-blue-500" />
+            How This Simulator Works
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            This simulator models <strong>real network behavior</strong> to help you understand why GraphQL
+            can be faster for complex data fetching. Here&apos;s what&apos;s happening:
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-orange-500" />
+                <span className="font-medium text-sm">Network Round-Trip</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Each HTTP request takes ~{NETWORK_CONSTANTS.ROUND_TRIP_MS}ms for DNS lookup, 
+                TCP/TLS handshake, and server processing. This is unavoidable latency.
+              </p>
+            </div>
+            
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-4 h-4 text-orange-500" />
+                <span className="font-medium text-sm">REST Waterfall</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                REST requires <strong>sequential</strong> requests. For nested data, request 2 can&apos;t 
+                start until request 1 finishes. Total time = requests × round-trip.
+              </p>
+            </div>
+            
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-4 h-4 text-pink-500" />
+                <span className="font-medium text-sm">GraphQL Batching</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                GraphQL bundles everything into <strong>one request</strong>. The server resolves 
+                all data in a single round-trip + ~{NETWORK_CONSTANTS.GRAPHQL_PARSING_MS}ms parsing.
+              </p>
+            </div>
+          </div>
+          
+          <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
+            <p className="text-xs text-muted-foreground">
+              <strong className="text-blue-600 dark:text-blue-400">💡 Key Insight:</strong> The timing 
+              difference isn&apos;t about &quot;speed&quot; - it&apos;s about <em>network efficiency</em>. GraphQL makes fewer 
+              trips to the server, so it avoids the latency penalty of multiple sequential requests.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+      
       {/* Side-by-side Comparison */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* REST Side */}
