@@ -1,22 +1,20 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
   Play,
   RotateCcw,
-  Server,
-  ArrowRight,
   CheckCircle,
   AlertTriangle,
   Clock,
   Database,
   Zap,
-  FileJson,
   ChevronRight,
   Copy,
   Check,
+  Info,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -24,37 +22,14 @@ import { cn } from '@/lib/utils';
 type Scenario = 'user-profile' | 'user-with-posts' | 'user-posts-comments' | 'multiple-resources';
 
 /**
- * TIMING METHODOLOGY EXPLANATION
- * ==============================
- * The simulation models real-world network behavior:
- *
- * 1. NETWORK ROUND-TRIP: Each HTTP request requires a full round-trip
- *    - DNS lookup (~5ms, cached after first)
- *    - TCP handshake (~15ms)
- *    - TLS negotiation (~30ms for HTTPS)
- *    - Server processing (~20-50ms)
- *    Total: ~80-100ms per request (conservative estimate)
- *
- * 2. REST WATERFALL PROBLEM: Sequential requests compound latency
- *    - Request 1 must complete before Request 2 starts
- *    - N requests = N * round-trip time
- *    - Example: 5 requests * 100ms = 500ms total
- *
- * 3. GRAPHQL SINGLE REQUEST: All data in one round-trip
- *    - One round-trip (~100ms) + query parsing overhead (~15ms)
- *    - Same data fetched in 115ms vs 500ms
- *
- * 4. PAYLOAD SIZE: Based on typical API responses
- *    - REST returns full objects (e.g., user with 20 fields)
- *    - GraphQL returns only requested fields (e.g., 4 fields)
- *    - Size difference: 2-8x smaller payloads
- *
- * Sources: HTTP/2 performance studies, Akamai latency reports,
- * Apollo GraphQL performance benchmarks
+ * TIMING METHODOLOGY
+ * Each HTTP request takes ~100ms (DNS + TCP/TLS + server processing).
+ * REST: N requests = N × 100ms (sequential waterfall).
+ * GraphQL: 1 request + 15ms parsing = 115ms total.
  */
 const NETWORK_CONSTANTS = {
-  ROUND_TRIP_MS: 100,  // Conservative estimate for API round-trip
-  GRAPHQL_PARSING_MS: 15,  // Query parsing overhead
+  ROUND_TRIP_MS: 100,
+  GRAPHQL_PARSING_MS: 15,
 };
 
 interface RequestLog {
@@ -94,14 +69,7 @@ const SCENARIOS: Record<Scenario, ScenarioData> = {
       overfetchedFields: ['created_at', 'updated_at', 'last_login', 'settings', 'preferences'],
     },
     graphql: {
-      query: `query {
-  user(id: "123") {
-    id
-    name
-    email
-    avatar
-  }
-}`,
+      query: `query {\n  user(id: "123") {\n    id\n    name\n    email\n    avatar\n  }\n}`,
       totalPayloadSize: 256,
       exactFields: ['id', 'name', 'email', 'avatar'],
     },
@@ -119,17 +87,7 @@ const SCENARIOS: Record<Scenario, ScenarioData> = {
       problem: 'Requires 2 sequential requests (waterfall)',
     },
     graphql: {
-      query: `query {
-  user(id: "123") {
-    name
-    email
-    posts(limit: 5) {
-      id
-      title
-      excerpt
-    }
-  }
-}`,
+      query: `query {\n  user(id: "123") {\n    name\n    email\n    posts(limit: 5) {\n      id\n      title\n      excerpt\n    }\n  }\n}`,
       totalPayloadSize: 1024,
       exactFields: ['name', 'email', 'posts.id', 'posts.title', 'posts.excerpt'],
     },
@@ -152,18 +110,7 @@ const SCENARIOS: Record<Scenario, ScenarioData> = {
       problem: 'N+1 problem: 1 + 1 + N requests',
     },
     graphql: {
-      query: `query {
-  user(id: "123") {
-    name
-    posts(limit: 5) {
-      title
-      comments(limit: 3) {
-        text
-        author { name }
-      }
-    }
-  }
-}`,
+      query: `query {\n  user(id: "123") {\n    name\n    posts(limit: 5) {\n      title\n      comments(limit: 3) {\n        text\n        author { name }\n      }\n    }\n  }\n}`,
       totalPayloadSize: 2048,
       exactFields: ['name', 'posts.title', 'comments.text', 'author.name'],
     },
@@ -182,23 +129,7 @@ const SCENARIOS: Record<Scenario, ScenarioData> = {
       problem: '3 parallel requests needed',
     },
     graphql: {
-      query: `query DashboardData {
-  users(limit: 10) {
-    id
-    name
-    avatar
-  }
-  recentPosts: posts(limit: 10) {
-    id
-    title
-    author { name }
-  }
-  tags {
-    id
-    name
-    count
-  }
-}`,
+      query: `query DashboardData {\n  users(limit: 10) {\n    id\n    name\n    avatar\n  }\n  recentPosts: posts(limit: 10) {\n    id\n    title\n    author { name }\n  }\n  tags {\n    id\n    name\n    count\n  }\n}`,
       totalPayloadSize: 4096,
       exactFields: ['users.id,name,avatar', 'posts.id,title,author', 'tags.id,name,count'],
     },
@@ -210,15 +141,6 @@ const formatBytes = (bytes: number): string => {
   return `${(bytes / 1024).toFixed(1)} KB`;
 };
 
-// Calculate expected timing based on network round-trips
-const calculateRestTime = (requestCount: number): number => {
-  return requestCount * NETWORK_CONSTANTS.ROUND_TRIP_MS;
-};
-
-const calculateGraphqlTime = (): number => {
-  return NETWORK_CONSTANTS.ROUND_TRIP_MS + NETWORK_CONSTANTS.GRAPHQL_PARSING_MS;
-};
-
 export default function RestVsGraphqlSimulator() {
   const [scenario, setScenario] = useState<Scenario>('user-profile');
   const [isRunning, setIsRunning] = useState(false);
@@ -228,6 +150,7 @@ export default function RestVsGraphqlSimulator() {
   const [graphqlComplete, setGraphqlComplete] = useState(false);
   const [copiedRest, setCopiedRest] = useState(false);
   const [copiedGraphql, setCopiedGraphql] = useState(false);
+  const [showExplanation, setShowExplanation] = useState(false);
 
   const currentScenario = SCENARIOS[scenario];
 
@@ -244,10 +167,8 @@ export default function RestVsGraphqlSimulator() {
     setIsRunning(true);
 
     const restRequests = currentScenario.rest.requests;
-    // Use network round-trip constant for realistic timing
     const perRequestDelay = NETWORK_CONSTANTS.ROUND_TRIP_MS;
 
-    // Initialize REST logs
     const initialLogs: RequestLog[] = restRequests.map((req, i) => ({
       id: `rest-${i}`,
       method: req.method,
@@ -256,7 +177,6 @@ export default function RestVsGraphqlSimulator() {
     }));
     setRestLogs(initialLogs);
 
-    // Initialize GraphQL log
     setGraphqlLog({
       id: 'graphql-0',
       method: 'POST',
@@ -264,8 +184,6 @@ export default function RestVsGraphqlSimulator() {
       status: 'pending',
     });
 
-    // Simulate REST requests sequentially with delays
-    // REST: Waterfall pattern - each request must complete before next starts
     for (let i = 0; i < restRequests.length; i++) {
       await new Promise((resolve) => setTimeout(resolve, perRequestDelay));
       setRestLogs((prev) =>
@@ -274,7 +192,7 @@ export default function RestVsGraphqlSimulator() {
             ? {
                 ...log,
                 status: 'success',
-                duration: perRequestDelay + Math.random() * 20, // Small variance
+                duration: perRequestDelay + Math.random() * 20,
                 responseSize: Math.floor(currentScenario.rest.totalPayloadSize / restRequests.length),
               }
             : log
@@ -283,10 +201,8 @@ export default function RestVsGraphqlSimulator() {
     }
     setRestComplete(true);
 
-    // GraphQL completes faster (single request)
-    // GraphQL: Single request completes in one round-trip + parsing overhead
-    const graphqlDuration = calculateGraphqlTime();
-    await new Promise((resolve) => setTimeout(resolve, 50)); // Visual delay for UI
+    const graphqlDuration = NETWORK_CONSTANTS.ROUND_TRIP_MS + NETWORK_CONSTANTS.GRAPHQL_PARSING_MS;
+    await new Promise((resolve) => setTimeout(resolve, 50));
     setGraphqlLog({
       id: 'graphql-0',
       method: 'POST',
@@ -324,7 +240,7 @@ export default function RestVsGraphqlSimulator() {
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6">
-      {/* Header */}
+      {/* Header with Controls */}
       <Card>
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -347,8 +263,7 @@ export default function RestVsGraphqlSimulator() {
           </div>
         </CardHeader>
         <CardContent>
-         {/* Scenario Selector */}
-         <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {(Object.keys(SCENARIOS) as Scenario[]).map((key) => (
               <Button
                 key={key}
@@ -367,7 +282,6 @@ export default function RestVsGraphqlSimulator() {
 
           {/* Inline Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t">
-            {/* Requests */}
             <div className="p-3 rounded-lg bg-muted/30 text-center">
               <div className="text-xs text-muted-foreground mb-1">Requests</div>
               <div className="flex items-center justify-center gap-2">
@@ -385,7 +299,6 @@ export default function RestVsGraphqlSimulator() {
               </div>
             </div>
 
-            {/* Payload Size */}
             <div className="p-3 rounded-lg bg-muted/30 text-center">
               <div className="text-xs text-muted-foreground mb-1">Payload</div>
               <div className="flex items-center justify-center gap-2">
@@ -401,7 +314,6 @@ export default function RestVsGraphqlSimulator() {
               </div>
             </div>
 
-            {/* Time */}
             <div className="p-3 rounded-lg bg-muted/30 text-center">
               <div className="text-xs text-muted-foreground mb-1">Time</div>
               <div className="flex items-center justify-center gap-2">
@@ -421,76 +333,41 @@ export default function RestVsGraphqlSimulator() {
               </div>
             </div>
 
-            {/* Bandwidth Savings */}
             <div className="p-3 rounded-lg bg-green-500/10 text-center border border-green-500/20">
               <div className="text-xs text-muted-foreground mb-1">Saved</div>
               <div className="text-2xl font-bold text-green-500">{savings}%</div>
               <div className="text-[10px] text-green-600 dark:text-green-400">with GraphQL</div>
             </div>
           </div>
+
+          {/* Collapsible explanation hint */}
+          <button
+            onClick={() => setShowExplanation(!showExplanation)}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground mt-3 transition-colors"
+          >
+            <Info className="w-3 h-3" />
+            {showExplanation ? 'Hide' : 'How are these numbers calculated?'}
+          </button>
+
+          {showExplanation && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mt-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20 text-xs text-muted-foreground"
+            >
+              <strong className="text-blue-600 dark:text-blue-400">Timing:</strong> Each HTTP request takes ~100ms
+              (DNS + TCP/TLS handshake + server processing). REST makes sequential requests, so 5 requests = 500ms.
+              GraphQL bundles everything into 1 request + 15ms parsing = 115ms.
+              <br />
+              <strong className="text-blue-600 dark:text-blue-400 mt-1 inline-block">Payload:</strong> REST returns full objects with all fields.
+              GraphQL returns only the fields you request, reducing bandwidth 2-8x.
+            </motion.div>
+          )}
         </CardContent>
       </Card>
-      
-      {/* How This Simulator Works - Beginner Explanation */}
-      <Card className="bg-gradient-to-br from-blue-500/5 to-purple-500/5 border-blue-500/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Database className="w-5 h-5 text-blue-500" />
-            How This Simulator Works
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            This simulator models <strong>real network behavior</strong> to help you understand why GraphQL
-            can be faster for complex data fetching. Here&apos;s what&apos;s happening:
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3 rounded-lg bg-muted/30 border">
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="w-4 h-4 text-orange-500" />
-                <span className="font-medium text-sm">Network Round-Trip</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Each HTTP request takes ~{NETWORK_CONSTANTS.ROUND_TRIP_MS}ms for DNS lookup, 
-                TCP/TLS handshake, and server processing. This is unavoidable latency.
-              </p>
-            </div>
-            
-            <div className="p-3 rounded-lg bg-muted/30 border">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-4 h-4 text-orange-500" />
-                <span className="font-medium text-sm">REST Waterfall</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                REST requires <strong>sequential</strong> requests. For nested data, request 2 can&apos;t 
-                start until request 1 finishes. Total time = requests × round-trip.
-              </p>
-            </div>
-            
-            <div className="p-3 rounded-lg bg-muted/30 border">
-              <div className="flex items-center gap-2 mb-2">
-                <Zap className="w-4 h-4 text-pink-500" />
-                <span className="font-medium text-sm">GraphQL Batching</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                GraphQL bundles everything into <strong>one request</strong>. The server resolves 
-                all data in a single round-trip + ~{NETWORK_CONSTANTS.GRAPHQL_PARSING_MS}ms parsing.
-              </p>
-            </div>
-          </div>
-          
-          <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-            <p className="text-xs text-muted-foreground">
-              <strong className="text-blue-600 dark:text-blue-400">💡 Key Insight:</strong> The timing 
-              difference isn&apos;t about &quot;speed&quot; - it&apos;s about <em>network efficiency</em>. GraphQL makes fewer 
-              trips to the server, so it avoids the latency penalty of multiple sequential requests.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* Side-by-side Comparison */}
+
+      {/* Side-by-side Comparison - THE MAIN SIMULATOR */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* REST Side */}
         <Card className="border-orange-500/30">
@@ -506,7 +383,6 @@ export default function RestVsGraphqlSimulator() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Request List */}
             <div className="space-y-2">
               <AnimatePresence>
                 {currentScenario.rest.requests.map((req, idx) => {
@@ -540,7 +416,6 @@ export default function RestVsGraphqlSimulator() {
               </AnimatePresence>
             </div>
 
-            {/* Problem Highlight */}
             {currentScenario.rest.problem && (
               <div className="flex items-start gap-2 p-3 rounded-md bg-orange-500/10 border border-orange-500/30">
                 <AlertTriangle className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
@@ -550,7 +425,6 @@ export default function RestVsGraphqlSimulator() {
               </div>
             )}
 
-            {/* Over-fetched Fields */}
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground">Over-fetched fields:</span>
               <div className="flex flex-wrap gap-1">
@@ -565,7 +439,6 @@ export default function RestVsGraphqlSimulator() {
               </div>
             </div>
 
-            {/* Code Preview */}
             <div className="relative">
               <Button
                 variant="ghost"
@@ -601,7 +474,6 @@ export default function RestVsGraphqlSimulator() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Single Request */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -624,7 +496,6 @@ export default function RestVsGraphqlSimulator() {
               )}
             </motion.div>
 
-            {/* Benefit Highlight */}
             <div className="flex items-start gap-2 p-3 rounded-md bg-green-500/10 border border-green-500/30">
               <Zap className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
               <span className="text-xs text-green-600 dark:text-green-400">
@@ -632,7 +503,6 @@ export default function RestVsGraphqlSimulator() {
               </span>
             </div>
 
-            {/* Exact Fields */}
             <div className="space-y-1">
               <span className="text-xs font-medium text-muted-foreground">Requested fields (exact):</span>
               <div className="flex flex-wrap gap-1">
@@ -647,7 +517,6 @@ export default function RestVsGraphqlSimulator() {
               </div>
             </div>
 
-            {/* Query Preview */}
             <div className="relative">
               <Button
                 variant="ghost"
@@ -667,10 +536,54 @@ export default function RestVsGraphqlSimulator() {
         </Card>
       </div>
 
+      {/* Educational Content - AFTER the simulator */}
+      <Card className="bg-gradient-to-br from-blue-500/5 to-purple-500/5 border-blue-500/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Database className="w-5 h-5 text-blue-500" />
+            Understanding the Comparison
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-orange-500" />
+                <span className="font-medium text-sm">Network Round-Trip</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Each HTTP request takes ~{NETWORK_CONSTANTS.ROUND_TRIP_MS}ms for DNS lookup,
+                TCP/TLS handshake, and server processing.
+              </p>
+            </div>
 
-      {/* Educational Content */}
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="w-4 h-4 text-orange-500" />
+                <span className="font-medium text-sm">REST Waterfall</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                REST requires <strong>sequential</strong> requests. For nested data, request 2
+                can&apos;t start until request 1 finishes.
+              </p>
+            </div>
+
+            <div className="p-3 rounded-lg bg-muted/30 border">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-4 h-4 text-pink-500" />
+                <span className="font-medium text-sm">GraphQL Batching</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                GraphQL bundles everything into <strong>one request</strong>. The server resolves
+                all data in a single round-trip.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pros/Cons */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* REST Pros/Cons */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -706,7 +619,6 @@ export default function RestVsGraphqlSimulator() {
           </CardContent>
         </Card>
 
-        {/* GraphQL Pros/Cons */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
