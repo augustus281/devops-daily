@@ -517,5 +517,6 @@
   "public/images/news/2026-week-5.svg": "89a2a8c5e48b434e",
   "public/images/posts/how-to-publish-helm-chart.svg": "12634b812b06cd8c",
   "public/images/posts/gitops-deploy-docker-containers-github-actions-argocd.svg": "855412f96012b098",
-  "public/images/games/deployment-strategies-og.svg": "cd56c3b1e26bbfc1"
+  "public/images/games/deployment-strategies-og.svg": "cd56c3b1e26bbfc1",
+  "public/images/games/rest-vs-graphql-og.svg": "affa238a388c78ce"
 }
