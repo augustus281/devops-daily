@@ -13,6 +13,7 @@ import {
   CheckCircle,
   XCircle,
   ArrowDown,
+  Keyboard,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -432,6 +433,13 @@ export default function CachingSimulator() {
             </div>
             <p className="text-[10px] sm:text-xs text-muted-foreground mt-2">
               Green ring = in cache
+            </p>
+            <p className="hidden text-[10px] text-muted-foreground mt-1 items-center gap-1 sm:flex">
+              <Keyboard className="h-3 w-3" />
+              <span>
+                Press <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">1-6</kbd> to request,{' '}
+                <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">R</kbd> to reset
+              </span>
             </p>
           </div>
 

@@ -16,6 +16,7 @@ import {
   XCircle,
   Plus,
   Trash2,
+  Keyboard,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -541,6 +542,14 @@ export default function DbIndexingSimulator() {
                 </>
               )}
             </Button>
+            <p className="mt-2 hidden items-center justify-center gap-1 text-[10px] text-muted-foreground sm:flex">
+              <Keyboard className="h-3 w-3" />
+              <span>
+                <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">1-4</kbd> select,{' '}
+                <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">Enter</kbd> run,{' '}
+                <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">R</kbd> reset
+              </span>
+            </p>
           </CardContent>
         </Card>
       </div>
