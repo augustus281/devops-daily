@@ -506,6 +506,7 @@ export default function DnsSimulator() {
             <div className="ml-auto hidden items-center gap-1.5 text-xs text-muted-foreground lg:flex">
               <Keyboard className="h-3 w-3" />
               <span>
+                <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">Space</kbd> start,{' '}
                 <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">→</kbd> next,{' '}
                 <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">←</kbd> back,{' '}
                 <kbd className="rounded border bg-muted px-1 py-0.5 text-[10px] font-mono">R</kbd> reset

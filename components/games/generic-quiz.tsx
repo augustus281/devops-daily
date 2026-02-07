@@ -323,7 +323,7 @@ export default function GenericQuiz({ quizConfig }: GenericQuizProps) {
                 </Button>
                 <p className="mt-4 text-xs text-muted-foreground flex items-center justify-center gap-1.5">
                   <Keyboard className="h-3 w-3" />
-                  <span>Press <kbd className="px-1.5 py-0.5 bg-muted border rounded text-[10px] font-mono">1-4</kbd> to select, <kbd className="px-1.5 py-0.5 bg-muted border rounded text-[10px] font-mono">Enter</kbd> to submit, <kbd className="px-1.5 py-0.5 bg-muted border rounded text-[10px] font-mono">?</kbd> for all shortcuts</span>
+                  <span>Press <kbd className="px-1.5 py-0.5 bg-muted border rounded text-[10px] font-mono">1-4</kbd> to select, <kbd className="px-1.5 py-0.5 bg-muted border rounded text-[10px] font-mono">Enter</kbd> to submit</span>
                 </p>
               </motion.div>
             </CardContent>
