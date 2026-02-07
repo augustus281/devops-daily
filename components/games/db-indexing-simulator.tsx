@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -114,6 +114,49 @@ export default function DbIndexingSimulator() {
   const [animation, setAnimation] = useState<ScanAnimation | null>(null);
   const [stats, setStats] = useState({ queries: 0, totalTime: 0, indexHits: 0 });
   const [isRunning, setIsRunning] = useState(false);
+
+  // Keyboard navigation handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't trigger if user is typing in an input
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      // Number keys 1-4 to select query
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= QUERIES.length && !isRunning) {
+        e.preventDefault();
+        setSelectedQuery(QUERIES[num - 1]);
+      }
+
+      // Enter or Space to run query
+      if ((e.key === 'Enter' || e.key === ' ') && !isRunning) {
+        e.preventDefault();
+        runQuery();
+      }
+
+      // R to reset
+      if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        reset();
+      }
+
+      // Escape to reset
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        reset();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isRunning]);
 
   const hasIndex = useCallback(
     (column: string) => indexes.some((idx) => idx.column === column),
