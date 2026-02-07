@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 
 // ============================================================================
 // TYPES
-// ============================================================================
+// ===========================================================================
 
 type ComponentType =
   | 'igw'
@@ -359,17 +359,17 @@ export default function AwsVpcSimulator() {
               : hasWarning
                 ? 'border-yellow-500 bg-yellow-500/20'
                 : 'border-green-500 bg-green-500/20'
-            : 'border-slate-600 bg-slate-800/50 hover:border-slate-500 hover:bg-slate-800'
+            : 'border bg-muted/50 hover:border-primary/50 hover:bg-muted'
         )}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <div className={cn('rounded-md p-1.5', isActive ? comp.bgColor : 'bg-slate-700/50')}>
-          <Icon className={cn('h-4 w-4 sm:h-5 sm:w-5', isActive ? comp.color : 'text-slate-400')} />
+        <div className={cn('rounded-md p-1.5', isActive ? comp.bgColor : 'bg-muted/50')}>
+          <Icon className={cn('h-4 w-4 sm:h-5 sm:w-5', isActive ? comp.color : 'text-muted-foreground')} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className={cn('text-xs font-medium sm:text-sm', isActive ? 'text-slate-100' : 'text-slate-300')}>
+            <span className={cn('text-xs font-medium sm:text-sm', isActive ? 'text-foreground' : 'text-muted-foreground')}>
               {comp.name}
             </span>
             {isActive && (
@@ -390,7 +390,7 @@ export default function AwsVpcSimulator() {
             e.stopPropagation();
             setSelectedInfo(selectedInfo === comp.type ? null : comp.type);
           }}
-          className="rounded p-1 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
+          className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <Info className="h-3 w-3 sm:h-4 sm:w-4" />
         </button>
@@ -399,10 +399,10 @@ export default function AwsVpcSimulator() {
   };
 
   return (
-    <Card className="mx-auto w-full max-w-4xl border-slate-700 bg-slate-900">
+    <Card className="mx-auto w-full max-w-4xl border ">
       <CardHeader className="pb-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg text-slate-100 sm:text-xl">
+          <CardTitle className="flex items-center gap-2 text-lg text-foreground sm:text-xl">
             <Cloud className="h-5 w-5 text-orange-400 sm:h-6 sm:w-6" />
             AWS VPC Builder
           </CardTitle>
@@ -412,8 +412,8 @@ export default function AwsVpcSimulator() {
               size="sm"
               onClick={() => setShowTestPanel(!showTestPanel)}
               className={cn(
-                'border-slate-600 text-slate-300 hover:bg-slate-800',
-                showTestPanel && 'bg-slate-800'
+                'border text-muted-foreground hover:bg-muted',
+                showTestPanel && 'bg-muted'
               )}
             >
               <Zap className="mr-1 h-3 w-3" />
@@ -423,14 +423,14 @@ export default function AwsVpcSimulator() {
               variant="outline"
               size="sm"
               onClick={reset}
-              className="border-slate-600 text-slate-300 hover:bg-slate-800"
+              className="border text-muted-foreground hover:bg-muted"
             >
               <RotateCcw className="mr-1 h-3 w-3" />
               Reset
             </Button>
           </div>
         </div>
-        <p className="mt-1 text-xs text-slate-400 sm:text-sm">
+        <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
           Build your VPC by adding components. The simulator will tell you if something is misconfigured.
         </p>
       </CardHeader>
@@ -438,12 +438,12 @@ export default function AwsVpcSimulator() {
       <CardContent className="space-y-4 sm:space-y-5">
         {/* Quick Presets */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-slate-400">Quick start:</span>
+          <span className="text-xs text-muted-foreground">Quick start:</span>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => loadPreset('public')}
-            className="h-6 px-2 text-xs text-slate-300 hover:bg-slate-800"
+            className="h-6 px-2 text-xs text-muted-foreground hover:bg-muted"
           >
             <PlayCircle className="mr-1 h-3 w-3" />
             Public Web Server
@@ -452,7 +452,7 @@ export default function AwsVpcSimulator() {
             variant="ghost"
             size="sm"
             onClick={() => loadPreset('private')}
-            className="h-6 px-2 text-xs text-slate-300 hover:bg-slate-800"
+            className="h-6 px-2 text-xs text-muted-foreground hover:bg-muted"
           >
             <PlayCircle className="mr-1 h-3 w-3" />
             Private with NAT
@@ -461,7 +461,7 @@ export default function AwsVpcSimulator() {
             variant="ghost"
             size="sm"
             onClick={() => loadPreset('full')}
-            className="h-6 px-2 text-xs text-slate-300 hover:bg-slate-800"
+            className="h-6 px-2 text-xs text-muted-foreground hover:bg-muted"
           >
             <PlayCircle className="mr-1 h-3 w-3" />
             Full Architecture
@@ -472,7 +472,7 @@ export default function AwsVpcSimulator() {
         <div className="space-y-3">
           {Object.entries(groupedComponents).map(([category, components]) => (
             <div key={category}>
-              <div className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">
+              <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 {category === 'gateway' && 'Gateways'}
                 {category === 'subnet' && 'Subnets'}
                 {category === 'compute' && 'Compute'}
@@ -494,21 +494,21 @@ export default function AwsVpcSimulator() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-lg border border-slate-600 bg-slate-800 p-3">
+              <div className="rounded-lg border border bg-muted p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     {React.createElement(COMPONENT_MAP[selectedInfo].icon, {
                       className: cn('h-4 w-4', COMPONENT_MAP[selectedInfo].color),
                     })}
-                    <span className="font-medium text-slate-200">{COMPONENT_MAP[selectedInfo].name}</span>
+                    <span className="font-medium text-foreground">{COMPONENT_MAP[selectedInfo].name}</span>
                   </div>
-                  <button onClick={() => setSelectedInfo(null)} className="text-slate-400 hover:text-slate-200">
+                  <button onClick={() => setSelectedInfo(null)} className="text-muted-foreground hover:text-foreground">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <p className="mt-2 text-sm text-slate-400">{COMPONENT_MAP[selectedInfo].description}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{COMPONENT_MAP[selectedInfo].description}</p>
                 {COMPONENT_MAP[selectedInfo].dependencies && (
-                  <div className="mt-2 text-xs text-slate-500">
+                  <div className="mt-2 text-xs text-muted-foreground">
                     <span className="font-medium">Requires:</span>{' '}
                     {COMPONENT_MAP[selectedInfo].dependencies!.map((d) => COMPONENT_MAP[d].name).join(', ')}
                   </div>
@@ -519,12 +519,12 @@ export default function AwsVpcSimulator() {
         </AnimatePresence>
 
         {/* Validation Feedback */}
-        <div className="rounded-lg border border-slate-700 bg-slate-800/50 p-3">
-          <div className="mb-2 text-xs font-medium text-slate-400">Configuration Status</div>
+        <div className="rounded-lg border border bg-muted/50 p-3">
+          <div className="mb-2 text-xs font-medium text-muted-foreground">Configuration Status</div>
           {activeComponents.size === 0 ? (
-            <p className="text-sm text-slate-500">Add components to build your VPC architecture.</p>
+            <p className="text-sm text-muted-foreground">Add components to build your VPC architecture.</p>
           ) : validation.length === 0 ? (
-            <p className="text-sm text-slate-400">Add more components to create a functional architecture.</p>
+            <p className="text-sm text-muted-foreground">Add more components to create a functional architecture.</p>
           ) : (
             <div className="space-y-2">
               {validation.map((v, i) => (
@@ -560,8 +560,8 @@ export default function AwsVpcSimulator() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-lg border border-slate-700 bg-slate-800/30 p-3 sm:p-4">
-                <div className="mb-3 text-xs font-medium text-slate-400">Your VPC Architecture</div>
+              <div className="rounded-lg border border bg-muted/30 p-3 sm:p-4">
+                <div className="mb-3 text-xs font-medium text-muted-foreground">Your VPC Architecture</div>
 
                 {/* Internet */}
                 <div className="mb-3 flex justify-center">
@@ -575,7 +575,7 @@ export default function AwsVpcSimulator() {
                 {activeComponents.has('igw') && (
                   <>
                     <div className="mb-1 flex justify-center">
-                      <div className="h-4 w-0.5 bg-slate-600" />
+                      <div className="h-4 w-0.5 bg-border" />
                     </div>
                     <div className="mb-3 flex justify-center">
                       <motion.div
@@ -591,8 +591,8 @@ export default function AwsVpcSimulator() {
                 )}
 
                 {/* VPC Container */}
-                <div className="rounded-lg border-2 border-dashed border-slate-600 p-3">
-                  <div className="mb-3 text-center text-[10px] text-slate-500">VPC (10.0.0.0/16)</div>
+                <div className="rounded-lg border-2 border-dashed border p-3">
+                  <div className="mb-3 text-center text-[10px] text-muted-foreground">VPC (10.0.0.0/16)</div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {/* Public Subnet */}
                     {activeComponents.has('public-subnet') && (
@@ -651,7 +651,7 @@ export default function AwsVpcSimulator() {
                     )}
 
                     {!activeComponents.has('public-subnet') && !activeComponents.has('private-subnet') && (
-                      <div className="col-span-full py-4 text-center text-xs text-slate-500">
+                      <div className="col-span-full py-4 text-center text-xs text-muted-foreground">
                         Add subnets to see the architecture
                       </div>
                     )}
@@ -671,12 +671,12 @@ export default function AwsVpcSimulator() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-lg border border-slate-700 bg-slate-800/50 p-3">
-                <div className="mb-2 text-xs font-medium text-slate-400">Connectivity Tests</div>
+              <div className="rounded-lg border border bg-muted/50 p-3">
+                <div className="mb-2 text-xs font-medium text-muted-foreground">Connectivity Tests</div>
                 <div className="space-y-2 text-sm">
                   {/* Test: Internet to Public EC2 */}
-                  <div className="flex items-center justify-between rounded bg-slate-800 p-2">
-                    <span className="text-slate-300">Internet to Public EC2</span>
+                  <div className="flex items-center justify-between rounded bg-muted p-2">
+                    <span className="text-muted-foreground">Internet to Public EC2</span>
                     {activeComponents.has('igw') &&
                     activeComponents.has('public-subnet') &&
                     activeComponents.has('public-ec2') ? (
@@ -690,8 +690,8 @@ export default function AwsVpcSimulator() {
                     )}
                   </div>
                   {/* Test: Private EC2 to Internet */}
-                  <div className="flex items-center justify-between rounded bg-slate-800 p-2">
-                    <span className="text-slate-300">Private EC2 to Internet</span>
+                  <div className="flex items-center justify-between rounded bg-muted p-2">
+                    <span className="text-muted-foreground">Private EC2 to Internet</span>
                     {activeComponents.has('igw') &&
                     activeComponents.has('nat-gateway') &&
                     activeComponents.has('private-subnet') &&
@@ -704,18 +704,18 @@ export default function AwsVpcSimulator() {
                         <X className="h-4 w-4" /> Blocked
                       </span>
                     ) : (
-                      <span className="text-slate-500">N/A</span>
+                      <span className="text-muted-foreground">N/A</span>
                     )}
                   </div>
                   {/* Test: Internet to Private EC2 */}
-                  <div className="flex items-center justify-between rounded bg-slate-800 p-2">
-                    <span className="text-slate-300">Internet to Private EC2</span>
+                  <div className="flex items-center justify-between rounded bg-muted p-2">
+                    <span className="text-muted-foreground">Internet to Private EC2</span>
                     {activeComponents.has('private-ec2') ? (
                       <span className="flex items-center gap-1 text-green-400">
                         <Shield className="h-4 w-4" /> Protected
                       </span>
                     ) : (
-                      <span className="text-slate-500">N/A</span>
+                      <span className="text-muted-foreground">N/A</span>
                     )}
                   </div>
                 </div>
@@ -725,23 +725,23 @@ export default function AwsVpcSimulator() {
         </AnimatePresence>
 
         {/* Keyboard Hints */}
-        <div className="hidden items-center justify-center gap-4 text-xs text-slate-500 sm:flex">
+        <div className="hidden items-center justify-center gap-4 text-xs text-muted-foreground sm:flex">
           <Keyboard className="h-3 w-3" />
           <span>
-            <kbd className="rounded bg-slate-700 px-1">1-3</kbd> presets
+            <kbd className="rounded bg-muted px-1">1-3</kbd> presets
           </span>
           <span>
-            <kbd className="rounded bg-slate-700 px-1">T</kbd> test
+            <kbd className="rounded bg-muted px-1">T</kbd> test
           </span>
           <span>
-            <kbd className="rounded bg-slate-700 px-1">R</kbd> reset
+            <kbd className="rounded bg-muted px-1">R</kbd> reset
           </span>
         </div>
 
         {/* Educational Summary */}
-        <div className="rounded-lg border border-slate-700 bg-slate-800/30 p-3">
-          <h3 className="mb-2 text-sm font-semibold text-slate-200">Key Concepts</h3>
-          <ul className="space-y-1 text-xs text-slate-400">
+        <div className="rounded-lg border border bg-muted/30 p-3">
+          <h3 className="mb-2 text-sm font-semibold text-foreground">Key Concepts</h3>
+          <ul className="space-y-1 text-xs text-muted-foreground">
             <li>
               <strong className="text-green-400">Public Subnet</strong>: Has route to Internet Gateway - resources can
               have public IPs
