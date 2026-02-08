@@ -518,6 +518,18 @@ export default function AwsVpcSimulator() {
           e.preventDefault();
           if (!isSimulating) setShowTestPanel((p) => !p);
           break;
+        case '4':
+          e.preventDefault();
+          if (!isSimulating) startSimulation('internet-to-public');
+          break;
+        case '5':
+          e.preventDefault();
+          if (!isSimulating) startSimulation('private-to-internet');
+          break;
+        case '6':
+          e.preventDefault();
+          if (!isSimulating) startSimulation('public-to-private');
+          break;
         case 'Escape':
           e.preventDefault();
           if (isSimulating) {
@@ -786,14 +798,21 @@ export default function AwsVpcSimulator() {
         </div>
 
         {/* Traffic Flow Simulation */}
-        <div className="overflow-hidden rounded-lg border bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-medium text-foreground">
-              <Play className="h-4 w-4" />
+        <div className="overflow-hidden rounded-lg border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-4">
+          {/* Header */}
+          <div className="mb-3 flex items-center justify-between">
+            <button
+              onClick={() => !isSimulating && startSimulation('internet-to-public')}
+              className="group flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-purple-600 dark:hover:text-purple-400"
+              disabled={isSimulating}
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-500/20 transition-colors group-hover:bg-purple-500/40">
+                <Play className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+              </div>
               Traffic Flow Simulation
-            </div>
+            </button>
             {isSimulating && (
-              <Button variant="ghost" size="sm" onClick={stopSimulation} className="h-6 px-2 text-xs">
+              <Button variant="ghost" size="sm" onClick={stopSimulation} className="h-7 px-2 text-xs">
                 <X className="mr-1 h-3 w-3" />
                 Exit
               </Button>
@@ -802,9 +821,9 @@ export default function AwsVpcSimulator() {
 
           {!isSimulating ? (
             <div className="space-y-2">
-              <p className="text-xs text-muted-foreground">Select a scenario to visualize how traffic flows through your VPC:</p>
+              <p className="text-xs text-muted-foreground">Select a scenario or press <kbd className="rounded bg-muted px-1">4-6</kbd> to start:</p>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                {TRAFFIC_SCENARIOS.map((scenario) => (
+                {TRAFFIC_SCENARIOS.map((scenario, index) => (
                   <Button
                     key={scenario.id}
                     variant="outline"
@@ -812,9 +831,12 @@ export default function AwsVpcSimulator() {
                     onClick={() => startSimulation(scenario.id)}
                     className="h-auto min-w-0 flex-col items-start gap-1 overflow-hidden p-2 text-left"
                   >
-                    <span className="flex w-full items-center gap-1 text-xs font-medium">
-                      <ArrowRight className="h-3 w-3" />
-                      {scenario.name}
+                    <span className="flex w-full items-center justify-between text-xs font-medium">
+                      <span className="flex items-center gap-1">
+                        <ArrowRight className="h-3 w-3" />
+                        {scenario.name}
+                      </span>
+                      <kbd className="hidden rounded bg-muted/50 px-1.5 py-0.5 text-[10px] text-muted-foreground sm:inline">{index + 4}</kbd>
                     </span>
                     <span className="line-clamp-2 w-full break-words text-[10px] text-muted-foreground">{scenario.description}</span>
                   </Button>
@@ -1112,6 +1134,9 @@ export default function AwsVpcSimulator() {
           <Keyboard className="h-3 w-3" />
           <span>
             <kbd className="rounded bg-muted px-1">1-3</kbd> presets
+          </span>
+          <span>
+            <kbd className="rounded bg-muted px-1">4-6</kbd> simulate
           </span>
           <span>
             <kbd className="rounded bg-muted px-1">T</kbd> test
