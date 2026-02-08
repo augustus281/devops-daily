@@ -43,7 +43,7 @@ interface VpcComponentDef {
   icon: React.ElementType;
   color: string;
   bgColor: string;
-  category: 'gateway' | 'subnet' | 'compute' | 'routing';
+  category: 'core' | 'public' | 'private';
   dependencies?: ComponentType[];
 }
 
@@ -65,7 +65,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Router,
     color: 'text-purple-500',
     bgColor: 'bg-purple-500/10',
-    category: 'gateway',
+    category: 'core',
   },
   {
     type: 'nat-gateway',
@@ -74,7 +74,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Shield,
     color: 'text-orange-500',
     bgColor: 'bg-orange-500/10',
-    category: 'gateway',
+    category: 'private',
     dependencies: ['igw', 'public-subnet'],
   },
   {
@@ -84,7 +84,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Cloud,
     color: 'text-green-500',
     bgColor: 'bg-green-500/10',
-    category: 'subnet',
+    category: 'public',
     dependencies: ['igw'],
   },
   {
@@ -94,7 +94,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Cloud,
     color: 'text-red-500',
     bgColor: 'bg-red-500/10',
-    category: 'subnet',
+    category: 'private',
   },
   {
     type: 'public-ec2',
@@ -103,7 +103,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Server,
     color: 'text-green-600',
     bgColor: 'bg-green-600/10',
-    category: 'compute',
+    category: 'public',
     dependencies: ['public-subnet'],
   },
   {
@@ -113,7 +113,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Server,
     color: 'text-red-600',
     bgColor: 'bg-red-600/10',
-    category: 'compute',
+    category: 'private',
     dependencies: ['private-subnet'],
   },
   {
@@ -123,7 +123,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Network,
     color: 'text-indigo-500',
     bgColor: 'bg-indigo-500/10',
-    category: 'routing',
+    category: 'public',
     dependencies: ['igw', 'public-subnet'],
   },
   {
@@ -133,7 +133,7 @@ const AVAILABLE_COMPONENTS: VpcComponentDef[] = [
     icon: Network,
     color: 'text-amber-500',
     bgColor: 'bg-amber-500/10',
-    category: 'routing',
+    category: 'private',
     dependencies: ['private-subnet'],
   },
 ];
@@ -334,10 +334,9 @@ export default function AwsVpcSimulator() {
   // Group components by category
   const groupedComponents = useMemo(() => {
     const groups: Record<string, VpcComponentDef[]> = {
-      gateway: [],
-      subnet: [],
-      compute: [],
-      routing: [],
+      core: [],
+      public: [],
+      private: [],
     };
     AVAILABLE_COMPONENTS.forEach((c) => groups[c.category].push(c));
     return groups;
@@ -474,11 +473,30 @@ export default function AwsVpcSimulator() {
         <div className="space-y-3">
           {Object.entries(groupedComponents).map(([category, components]) => (
             <div key={category}>
-              <div className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                {category === 'gateway' && 'Gateways'}
-                {category === 'subnet' && 'Subnets'}
-                {category === 'compute' && 'Compute'}
-                {category === 'routing' && 'Routing'}
+              <div className={cn(
+                'mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wider',
+                category === 'core' && 'text-purple-600 dark:text-purple-400',
+                category === 'public' && 'text-green-600 dark:text-green-400',
+                category === 'private' && 'text-red-600 dark:text-red-400'
+              )}>
+                {category === 'core' && (
+                  <>
+                    <Globe className="h-3.5 w-3.5" />
+                    Core Infrastructure
+                  </>
+                )}
+                {category === 'public' && (
+                  <>
+                    <Cloud className="h-3.5 w-3.5" />
+                    Public Layer (Internet-Facing)
+                  </>
+                )}
+                {category === 'private' && (
+                  <>
+                    <Shield className="h-3.5 w-3.5" />
+                    Private Layer (Protected)
+                  </>
+                )}
               </div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {components.map(renderComponentButton)}
