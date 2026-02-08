@@ -755,6 +755,35 @@ export default function AwsVpcSimulator() {
         {/* Validation Feedback */}
         <div className="rounded-lg border border bg-muted/50 p-3">
           <div className="mb-2 text-xs font-medium text-muted-foreground">Configuration Status</div>
+          {activeComponents.size === 0 ? (
+            <p className="text-sm text-muted-foreground">Add components to build your VPC architecture.</p>
+          ) : validation.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Add more components to create a functional architecture.</p>
+          ) : (
+            <div className="space-y-2">
+              {validation.map((v, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className={cn(
+                    'flex items-start gap-2 rounded-md p-2 text-sm',
+                    v.type === 'error' && 'bg-red-500/10 text-red-700 dark:text-red-300',
+                    v.type === 'warning' && 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-300',
+                    v.type === 'info' && 'bg-blue-500/10 text-blue-700 dark:text-blue-300',
+                    v.type === 'success' && 'bg-green-500/10 text-green-700 dark:text-green-300'
+                  )}
+                >
+                  {v.type === 'error' && <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
+                  {v.type === 'warning' && <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
+                  {v.type === 'info' && <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />}
+                  {v.type === 'success' && <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
+                  <span>{v.message}</span>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Traffic Flow Simulation */}
         <div className="rounded-lg border border bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-3">
@@ -877,39 +906,6 @@ export default function AwsVpcSimulator() {
                 <span><kbd className="rounded bg-muted px-1">→</kbd> Next</span>
                 <span><kbd className="rounded bg-muted px-1">Esc</kbd> Exit</span>
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* Validation Feedback */}
-        <div className="rounded-lg border border bg-muted/50 p-3">
-          <div className="mb-2 text-xs font-medium text-muted-foreground">Configuration Status</div>
-          {activeComponents.size === 0 ? (
-            <p className="text-sm text-muted-foreground">Add components to build your VPC architecture.</p>
-          ) : validation.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Add more components to create a functional architecture.</p>
-          ) : (
-            <div className="space-y-2">
-              {validation.map((v, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={cn(
-                    'flex items-start gap-2 rounded-md p-2 text-sm',
-                    v.type === 'error' && 'bg-red-500/10 text-red-700 dark:text-red-300',
-                    v.type === 'warning' && 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-300',
-                    v.type === 'info' && 'bg-blue-500/10 text-blue-700 dark:text-blue-300',
-                    v.type === 'success' && 'bg-green-500/10 text-green-700 dark:text-green-300'
-                  )}
-                >
-                  {v.type === 'error' && <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
-                  {v.type === 'warning' && <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
-                  {v.type === 'info' && <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />}
-                  {v.type === 'success' && <CheckCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />}
-                  <span>{v.message}</span>
-                </motion.div>
-              ))}
             </div>
           )}
         </div>
