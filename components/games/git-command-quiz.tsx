@@ -302,7 +302,7 @@ export default function GitCommandQuiz() {
           e.preventDefault();
           setGameStarted(true);
         }
-        if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey) {
+        if (e.key === 'r' || e.key === 'R') {
           handleRestart();
         }
         return;
@@ -329,7 +329,7 @@ export default function GitCommandQuiz() {
         setShowHint((prev) => !prev);
       }
 
-      if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey) {
+      if (e.key === 'r' || e.key === 'R') {
         handleRestart();
       }
     };
