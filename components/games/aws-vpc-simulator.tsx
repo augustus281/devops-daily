@@ -786,7 +786,7 @@ export default function AwsVpcSimulator() {
         </div>
 
         {/* Traffic Flow Simulation */}
-        <div className="rounded-lg border border bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-3">
+        <div className="overflow-hidden rounded-lg border bg-gradient-to-br from-purple-500/10 to-blue-500/10 p-3">
           <div className="mb-2 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-medium text-foreground">
               <Play className="h-4 w-4" />
@@ -810,13 +810,13 @@ export default function AwsVpcSimulator() {
                     variant="outline"
                     size="sm"
                     onClick={() => startSimulation(scenario.id)}
-                    className="h-auto flex-col items-start gap-1 p-2 text-left"
+                    className="h-auto min-w-0 flex-col items-start gap-1 overflow-hidden p-2 text-left"
                   >
-                    <span className="flex items-center gap-1 text-xs font-medium">
+                    <span className="flex w-full items-center gap-1 text-xs font-medium">
                       <ArrowRight className="h-3 w-3" />
                       {scenario.name}
                     </span>
-                    <span className="text-[10px] text-muted-foreground">{scenario.description}</span>
+                    <span className="line-clamp-2 w-full break-words text-[10px] text-muted-foreground">{scenario.description}</span>
                   </Button>
                 ))}
               </div>
@@ -901,7 +901,7 @@ export default function AwsVpcSimulator() {
               </div>
 
               {/* Keyboard hints */}
-              <div className="flex items-center justify-center gap-3 text-[10px] text-muted-foreground">
+              <div className="flex items-center justify-center gap-3 line-clamp-2 w-full break-words text-[10px] text-muted-foreground">
                 <span><kbd className="rounded bg-muted px-1">←</kbd> Back</span>
                 <span><kbd className="rounded bg-muted px-1">→</kbd> Next</span>
                 <span><kbd className="rounded bg-muted px-1">Esc</kbd> Exit</span>
@@ -954,7 +954,7 @@ export default function AwsVpcSimulator() {
 
                 {/* VPC Container */}
                 <div className="rounded-lg border-2 border-dashed border p-3">
-                  <div className="mb-3 text-center text-[10px] text-muted-foreground">VPC (10.0.0.0/16)</div>
+                  <div className="mb-3 text-center line-clamp-2 w-full break-words text-[10px] text-muted-foreground">VPC (10.0.0.0/16)</div>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     {/* Public Subnet */}
                     {activeComponents.has('public-subnet') && (
