@@ -388,7 +388,7 @@ export default function TcpVsUdpSimulator() {
       }
 
       // R to reset
-      if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey) {
+      if (e.key === 'r' || e.key === 'R') {
         e.preventDefault();
         handleReset();
       }
