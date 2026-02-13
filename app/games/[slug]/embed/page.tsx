@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getGameById, getAllGameIds } from '@/lib/games';
-import { EmbedBadge } from '@/components/embed';
+import { EmbedClient } from './embed-client';
 
 // Import all game components
 import TcpVsUdpSimulator from '@/components/games/tcp-vs-udp';
@@ -63,7 +63,6 @@ const GAME_COMPONENTS: Record<string, React.ComponentType> = {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ theme?: string; hideTitle?: string }>;
 }
 
 export async function generateStaticParams() {
@@ -86,9 +85,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function EmbedGamePage({ params, searchParams }: PageProps) {
+export default async function EmbedGamePage({ params }: PageProps) {
   const { slug } = await params;
-  const { theme, hideTitle } = await searchParams;
 
   const game = await getGameById(slug);
   const GameComponent = GAME_COMPONENTS[slug];
@@ -97,37 +95,5 @@ export default async function EmbedGamePage({ params, searchParams }: PageProps)
     notFound();
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://devops-daily.com';
-  const gameUrl = `${siteUrl}/games/${slug}`;
-  const showTitle = hideTitle !== 'true';
-
-  return (
-    <div
-      className={`min-h-screen bg-background text-foreground ${theme === 'light' ? '' : 'dark'}`}
-      data-theme={theme || 'dark'}
-    >
-      {/* Minimal header */}
-      {showTitle && (
-        <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
-          <h1 className="text-sm font-semibold truncate">{game.title}</h1>
-          <a
-            href={gameUrl}
-            target="_blank"
-            rel="noopener"
-            className="text-xs text-muted-foreground hover:text-primary transition-colors whitespace-nowrap ml-4"
-          >
-            View Full Version →
-          </a>
-        </div>
-      )}
-
-      {/* Game content */}
-      <div className="p-4">
-        <GameComponent />
-      </div>
-
-      {/* Attribution badge - always visible, cannot be removed */}
-      <EmbedBadge gameSlug={slug} gameTitle={game.title} />
-    </div>
-  );
+  return <EmbedClient slug={slug} title={game.title} GameComponent={GameComponent} />;
 }
