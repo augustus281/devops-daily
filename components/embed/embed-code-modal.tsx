@@ -116,7 +116,7 @@ export function EmbedCodeModal({ gameSlug, gameTitle }: EmbedCodeModalProps) {
             <TabsTrigger value="preview">Preview</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="iframe" className="space-y-3 mt-3">
+          <TabsContent value="iframe" className="space-y-3 mt-3 overflow-hidden">
             {/* Size Presets */}
             <div className="space-y-2">
               <Label className="text-sm font-medium">Size</Label>
@@ -193,8 +193,8 @@ export function EmbedCodeModal({ gameSlug, gameTitle }: EmbedCodeModalProps) {
                   )}
                 </Button>
               </div>
-              <pre className="p-4 bg-slate-900 rounded-lg overflow-auto max-h-[140px] text-xs text-slate-300 border border-slate-700">
-                <code>{sizePreset === 'responsive' ? responsiveCode : iframeCode}</code>
+              <pre className="p-4 bg-slate-900 rounded-lg overflow-auto max-h-[140px] w-full text-xs text-slate-300 border border-slate-700">
+                <code className="whitespace-pre-wrap break-words">{sizePreset === 'responsive' ? responsiveCode : iframeCode}</code>
               </pre>
             </div>
 
