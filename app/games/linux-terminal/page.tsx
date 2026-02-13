@@ -3,6 +3,7 @@ import { Breadcrumb } from '@/components/breadcrumb';
 import { BreadcrumbSchema } from '@/components/schema-markup';
 import LinuxTerminal from '@/components/games/linux-terminal';
 import { GameActions } from '@/components/games/game-actions';
+import { Twitter, Facebook, Linkedin } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Learn Linux - Interactive Terminal Tutorial | DevOps Daily',
