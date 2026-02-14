@@ -4,19 +4,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { sponsors } from '@/lib/sponsors';
+import { CarbonAds } from '@/components/carbon-ads';
 
 interface GameSponsorsProps {
   className?: string;
+  showCarbonAds?: boolean;
 }
 
 /**
  * Slim, inline sponsor bar for game/simulator pages.
- * Placed below the game component, full width, minimal design.
+ * Placed above the game component, full width, minimal design.
+ * Optionally includes CarbonAds.
  */
-export function GameSponsors({ className }: GameSponsorsProps) {
+export function GameSponsors({ className, showCarbonAds = true }: GameSponsorsProps) {
   return (
-    <div className={cn('w-full mb-6', className)}>
-      <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 py-5 px-8 rounded-lg border border-border/40 bg-muted/30">
+    <div className={cn('w-full mb-6 space-y-4', className)}>
+      {/* Sponsors Bar */}
+      <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 py-4 px-6 rounded-lg border border-border/40 bg-muted/30">
         <span className="text-sm font-semibold text-muted-foreground">Supported by</span>
         {sponsors.map((sponsor) => (
           <Link
@@ -38,7 +42,7 @@ export function GameSponsors({ className }: GameSponsorsProps) {
             />
           </Link>
         ))}
-        <span className="text-muted-foreground/40">|</span>
+        <span className="text-muted-foreground/40 hidden sm:inline">|</span>
         <Link
           href="/sponsorship"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline"
@@ -46,6 +50,15 @@ export function GameSponsors({ className }: GameSponsorsProps) {
           Become a sponsor
         </Link>
       </div>
+
+      {/* Carbon Ads */}
+      {showCarbonAds && (
+        <div className="flex justify-center">
+          <div className="max-w-md w-full">
+            <CarbonAds />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
