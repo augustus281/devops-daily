@@ -43,6 +43,14 @@ export default async function RestVsGraphqlPage() {
             REST API vs GraphQL - Interactive Comparison Simulator
           </h2>
           <RestVsGraphqlSimulator />
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>

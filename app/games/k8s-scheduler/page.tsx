@@ -85,7 +85,14 @@ export default async function K8sSchedulerPage() {
             </div>
           </div>
 
-          {/* Back to games */}
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>

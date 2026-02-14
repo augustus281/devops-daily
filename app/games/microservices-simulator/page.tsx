@@ -162,12 +162,19 @@ export default async function MicroservicesSimulatorPage() {
                 className="p-3 transition-colors border rounded-lg hover:bg-muted"
               >
                 <Linkedin className="w-5 h-5" />
-              </a>
-            </div>
+             </a>
+           </div>
+         </div>
+
+         {/* Back to Games */}
           </div>
 
-          {/* Back to Games */}
-          
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>
