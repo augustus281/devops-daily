@@ -6,7 +6,7 @@ import { Twitter, Facebook, Linkedin } from 'lucide-react';
 import { generateGameMetadata } from '@/lib/game-metadata';
 import { getGameById } from '@/lib/games';
 import { GameActions } from '@/components/games/game-actions';
-import { InlineSponsors } from '@/components/inline-sponsors';
+import { SponsorSidebar } from '@/components/sponsor-sidebar';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateGameMetadata('scaling-simulator');
@@ -37,17 +37,14 @@ export default async function ScalingSimulatorPage() {
           <GameActions gameSlug="scaling-simulator" gameTitle={gameTitle} />
         </div>
 
-        <div className="flex flex-col items-center mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
+          {/* Main Content */}
+          <div className="lg:col-span-9 flex flex-col items-center">
           <h2 className="sr-only">
             Horizontal vs Vertical Scaling Simulator - Learn Scaling Strategies
-         </h2>
+          </h2>
 
-         <ScalingSimulator />
-
-          {/* Our Sponsors */}
-          <div className="w-full my-8">
-            <InlineSponsors variant="compact" />
-          </div>
+          <ScalingSimulator />
 
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
             <h2 className="mb-4 text-2xl font-bold">Understanding Scaling Strategies</h2>
@@ -151,6 +148,14 @@ export default async function ScalingSimulatorPage() {
               </a>
             </div>
           </div>
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>

@@ -11,7 +11,7 @@ import { notFound } from 'next/navigation';
 import { generateGameMetadata } from '@/lib/game-metadata';
 import { getGameById } from '@/lib/games';
 import { GameActions } from '@/components/games/game-actions';
-import { InlineSponsors } from '@/components/inline-sponsors';
+import { SponsorSidebar } from '@/components/sponsor-sidebar';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateGameMetadata('git-quiz');
@@ -51,17 +51,14 @@ export default async function GitQuizPage() {
           <GameActions gameSlug="git-quiz" gameTitle={gameTitle} />
         </div>
 
-        <div className="flex flex-col items-center max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
+          {/* Main Content */}
+          <div className="lg:col-span-9 flex flex-col items-center">
           {/* Page H1 heading for SEO and accessibility */}
           <h1 className="sr-only">Git Command Quiz</h1>
 
-         {/* Quiz Component */}
-         <GenericQuiz quizConfig={quizConfig} />
-
-          {/* Our Sponsors */}
-          <div className="w-full my-8">
-            <InlineSponsors variant="compact" />
-          </div>
+          {/* Quiz Component */}
+          <GenericQuiz quizConfig={quizConfig} />
 
           {/* Share buttons */}
           <div className="w-full max-w-md my-8">
@@ -163,6 +160,14 @@ export default async function GitQuizPage() {
               variant="compact"
             />
           </div>
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>

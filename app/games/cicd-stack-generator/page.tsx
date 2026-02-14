@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { generateGameMetadata } from '@/lib/game-metadata';
 import { getGameById } from '@/lib/games';
 import { GameActions } from '@/components/games/game-actions';
-import { InlineSponsors } from '@/components/inline-sponsors';
+import { SponsorSidebar } from '@/components/sponsor-sidebar';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateGameMetadata('cicd-stack-generator');
@@ -41,14 +41,11 @@ export default async function CICDStackGeneratorPage() {
           <GameActions gameSlug="cicd-stack-generator" gameTitle={gameTitle} />
         </div>
 
-        <div className="flex flex-col items-center max-w-4xl mx-auto">
-         {/* Game Component */}
-         <CICDStackGenerator />
-
-          {/* Our Sponsors */}
-          <div className="w-full my-8">
-            <InlineSponsors variant="compact" />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-6xl mx-auto">
+          {/* Main Content */}
+          <div className="lg:col-span-9 flex flex-col items-center">
+          {/* Game Component */}
+          <CICDStackGenerator />
 
           {/* Share buttons */}
           <div className="w-full max-w-md my-8">
@@ -108,6 +105,14 @@ export default async function CICDStackGeneratorPage() {
               stack!
             </p>
           </div>
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>

@@ -36,58 +36,59 @@ export default async function TcpVsUdpPage() {
           <GameActions gameSlug="tcp-vs-udp" gameTitle={gameTitle} />
         </div>
 
-        <div className="flex flex-col mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
+          {/* Main Content */}
+          <div className="lg:col-span-9 flex flex-col">
           <h2 className="sr-only">
             TCP vs UDP Simulator - Learn Network Protocol Differences
           </h2>
           <TcpVsUdpSimulator />
 
-          {/* Educational Content + Sidebar */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full my-8">
-            {/* Educational Content */}
-            <div className="lg:col-span-9 p-6 rounded-lg bg-muted/30">
-              <h2 className="mb-4 text-2xl font-bold">Understanding TCP vs UDP</h2>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <h3 className="mb-3 text-lg font-semibold text-cyan-600 dark:text-cyan-400">TCP (Transmission Control Protocol)</h3>
-                  <ul className="space-y-2 text-sm list-disc list-inside">
-                    <li>Connection-oriented with 3-way handshake</li>
-                    <li>Guaranteed delivery and ordering</li>
-                    <li>Automatic retransmission of lost packets</li>
-                    <li>Flow control and congestion management</li>
-                    <li>Higher overhead but reliable</li>
-                    <li>Best for: HTTP, FTP, email, file transfers</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="mb-3 text-lg font-semibold text-green-600 dark:text-green-400">UDP (User Datagram Protocol)</h3>
-                  <ul className="space-y-2 text-sm list-disc list-inside">
-                    <li>Connectionless - no handshake required</li>
-                    <li>No delivery or ordering guarantees</li>
-                    <li>No retransmission - fire and forget</li>
-                    <li>Minimal overhead, very fast</li>
-                    <li>Lower latency, higher throughput</li>
-                    <li>Best for: Streaming, gaming, VoIP, DNS</li>
-                  </ul>
-                </div>
+          <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
+            <h2 className="mb-4 text-2xl font-bold">Understanding TCP vs UDP</h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h3 className="mb-3 text-lg font-semibold text-cyan-600 dark:text-cyan-400">TCP (Transmission Control Protocol)</h3>
+                <ul className="space-y-2 text-sm list-disc list-inside">
+                  <li>Connection-oriented with 3-way handshake</li>
+                  <li>Guaranteed delivery and ordering</li>
+                  <li>Automatic retransmission of lost packets</li>
+                  <li>Flow control and congestion management</li>
+                  <li>Higher overhead but reliable</li>
+                  <li>Best for: HTTP, FTP, email, file transfers</li>
+                </ul>
               </div>
-
-              <div className="p-4 mt-6 border rounded-lg bg-blue-50 dark:bg-blue-950/20 border-blue-500/20">
-                <h3 className="mb-2 text-lg font-semibold">When to Use Each Protocol</h3>
-                <ul className="space-y-1 text-sm">
-                  <li><strong>Use TCP</strong> when data integrity is critical (banking, file downloads, web pages)</li>
-                  <li><strong>Use UDP</strong> when speed matters more than reliability (live video, multiplayer games)</li>
-                  <li>Some apps use both: DNS queries over UDP, zone transfers over TCP</li>
-                  <li>Modern protocols like QUIC combine benefits of both (HTTP/3)</li>
+              <div>
+                <h3 className="mb-3 text-lg font-semibold text-green-600 dark:text-green-400">UDP (User Datagram Protocol)</h3>
+                <ul className="space-y-2 text-sm list-disc list-inside">
+                  <li>Connectionless - no handshake required</li>
+                  <li>No delivery or ordering guarantees</li>
+                  <li>No retransmission - fire and forget</li>
+                  <li>Minimal overhead, very fast</li>
+                  <li>Lower latency, higher throughput</li>
+                  <li>Best for: Streaming, gaming, VoIP, DNS</li>
                 </ul>
               </div>
             </div>
 
-            {/* Sponsor Sidebar */}
-            <aside className="lg:col-span-3">
-              <SponsorSidebar />
-            </aside>
+            <div className="p-4 mt-6 border rounded-lg bg-blue-50 dark:bg-blue-950/20 border-blue-500/20">
+              <h3 className="mb-2 text-lg font-semibold">💡 When to Use Each Protocol</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• <strong>Use TCP</strong> when data integrity is critical (banking, file downloads, web pages)</li>
+                <li>• <strong>Use UDP</strong> when speed matters more than reliability (live video, multiplayer games)</li>
+                <li>• Some apps use both: DNS queries over UDP, zone transfers over TCP</li>
+                <li>• Modern protocols like QUIC combine benefits of both (HTTP/3)</li>
+              </ul>
+            </div>
           </div>
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>

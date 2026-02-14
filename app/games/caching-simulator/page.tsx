@@ -6,7 +6,7 @@ import { Twitter, Facebook, Linkedin } from 'lucide-react';
 import { generateGameMetadata } from '@/lib/game-metadata';
 import { getGameById } from '@/lib/games';
 import { GameActions } from '@/components/games/game-actions';
-import { InlineSponsors } from '@/components/inline-sponsors';
+import { SponsorSidebar } from '@/components/sponsor-sidebar';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateGameMetadata('caching-simulator');
@@ -39,17 +39,14 @@ export default async function CachingSimulatorPage() {
           <GameActions gameSlug="caching-simulator" gameTitle={gameTitle} />
         </div>
 
-        <div className="flex flex-col items-center mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
+          {/* Main Content */}
+          <div className="lg:col-span-9 flex flex-col items-center">
           <h2 className="sr-only">
             Caching Strategies Simulator - Learn Cache Eviction Policies & Write Strategies
           </h2>
-         {/* Game Component */}
-         <CachingSimulator />
-
-          {/* Our Sponsors */}
-          <div className="w-full my-8">
-            <InlineSponsors variant="compact" />
-          </div>
+          {/* Game Component */}
+          <CachingSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
@@ -139,6 +136,14 @@ export default async function CachingSimulatorPage() {
               </a>
             </div>
           </div>
+          </div>
+
+          {/* Sponsor Sidebar */}
+          <aside className="lg:col-span-3">
+            <div className="sticky top-8">
+              <SponsorSidebar />
+            </div>
+          </aside>
         </div>
       </div>
     </>
