@@ -34,10 +34,11 @@ export default async function PacketJourneyPage() {
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="packet-journey" gameTitle={gameTitle} />
        </div>
-       <PacketJourney />
 
         {/* Sponsors */}
         <GameSponsors />
+
+       <PacketJourney />
       </div>
     </>
   );

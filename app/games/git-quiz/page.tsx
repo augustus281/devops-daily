@@ -55,11 +55,11 @@ export default async function GitQuizPage() {
           {/* Page H1 heading for SEO and accessibility */}
           <h1 className="sr-only">Git Command Quiz</h1>
 
-          {/* Quiz Component */}
-          <GenericQuiz quizConfig={quizConfig} />
-
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Quiz Component */}
+          <GenericQuiz quizConfig={quizConfig} />
 
           {/* Share buttons */}
           <div className="w-full max-w-md my-8">

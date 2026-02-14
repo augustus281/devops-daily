@@ -42,10 +42,10 @@ export default async function LoadBalancerSimulatorPage() {
             Load Balancer Algorithm Simulator - Learn Load Balancing Strategies
           </h2>
 
-         <LoadBalancerSimulator />
-
           {/* Sponsors */}
           <GameSponsors />
+
+         <LoadBalancerSimulator />
 
          <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
            <h2 className="mb-4 text-2xl font-bold">Understanding Load Balancing</h2>

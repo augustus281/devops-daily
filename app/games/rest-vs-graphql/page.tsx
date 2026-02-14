@@ -39,11 +39,12 @@ export default async function RestVsGraphqlPage() {
         <div className="flex flex-col mx-auto max-w-7xl">
           <h2 className="sr-only">
             REST API vs GraphQL - Interactive Comparison Simulator
-         </h2>
-         <RestVsGraphqlSimulator />
+          </h2>
 
           {/* Sponsors */}
           <GameSponsors />
+
+         <RestVsGraphqlSimulator />
         </div>
       </div>
     </>

@@ -42,11 +42,11 @@ export default async function DevOpsMemesPage() {
         </div>
 
         <div className="flex flex-col items-center max-w-6xl mx-auto">
-          {/* Game Component */}
-          <DevOpsMemes />
-
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <DevOpsMemes />
 
           {/* Educational Content */}
           <div className="w-full max-w-4xl mt-16 space-y-8">

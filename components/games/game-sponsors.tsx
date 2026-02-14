@@ -15,7 +15,6 @@ const sponsors = [
     name: 'DevDojo',
     logo: '/devdojo.svg?height=60&width=120',
     url: 'https://devdojo.com',
-    className: 'h-5 w-auto fill-current text-red-500',
   },
 ];
 
@@ -29,30 +28,30 @@ interface GameSponsorsProps {
  */
 export function GameSponsors({ className }: GameSponsorsProps) {
   return (
-    <div className={cn('w-full my-6', className)}>
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 py-3 px-4 rounded-lg border border-border/30 bg-muted/20">
-        <span className="text-xs text-muted-foreground">Supported by</span>
+    <div className={cn('w-full mb-6', className)}>
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-4 px-6 rounded-lg border border-border/40 bg-muted/30">
+        <span className="text-sm font-medium text-muted-foreground">Supported by</span>
         {sponsors.map((sponsor) => (
           <Link
             key={sponsor.name}
             href={sponsor.url}
             target="_blank"
             rel="noopener noreferrer sponsored"
-            className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="group flex items-center gap-2 px-3 py-1.5 rounded-md hover:bg-muted/50 transition-all"
           >
             <Image
               src={sponsor.logo || '/placeholder.svg'}
               alt={sponsor.name}
-              width={60}
-              height={24}
-              className={cn('h-5 w-auto opacity-70 group-hover:opacity-100 transition-opacity', sponsor.className)}
+              width={100}
+              height={32}
+              className="h-7 w-auto opacity-85 group-hover:opacity-100 transition-opacity"
             />
-            <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
           </Link>
         ))}
+        <span className="text-muted-foreground/40">|</span>
         <Link
           href="/sponsorship"
-          className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline"
         >
           Become a sponsor
         </Link>

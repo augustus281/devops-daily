@@ -42,10 +42,10 @@ export default async function ScalingSimulatorPage() {
             Horizontal vs Vertical Scaling Simulator - Learn Scaling Strategies
           </h2>
 
-         <ScalingSimulator />
-
           {/* Sponsors */}
           <GameSponsors />
+
+         <ScalingSimulator />
 
          <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
            <h2 className="mb-4 text-2xl font-bold">Understanding Scaling Strategies</h2>

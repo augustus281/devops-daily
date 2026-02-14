@@ -34,10 +34,11 @@ export default async function DbmsSimulatorPage() {
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="dbms-simulator" gameTitle={gameTitle} />
         </div>
-        <DbmsSimulator />
 
         {/* Sponsors */}
         <GameSponsors />
+
+        <DbmsSimulator />
       </div>
     </>
   );

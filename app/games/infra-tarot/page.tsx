@@ -49,11 +49,11 @@ export default async function InfraTarotPage() {
             
           </div>
 
-         {/* Game Component */}
-         <InfraTarot />
-
           {/* Sponsors */}
           <GameSponsors />
+
+         {/* Game Component */}
+         <InfraTarot />
 
          {/* Social Sharing */}
           <div className="w-full max-w-4xl mt-8 p-6 bg-muted/30 rounded-lg">

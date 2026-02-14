@@ -43,11 +43,12 @@ export default async function CachingSimulatorPage() {
           <h2 className="sr-only">
             Caching Strategies Simulator - Learn Cache Eviction Policies & Write Strategies
           </h2>
-          {/* Game Component */}
-          <CachingSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <CachingSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">

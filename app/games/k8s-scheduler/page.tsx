@@ -47,10 +47,10 @@ export default async function K8sSchedulerPage() {
             <span className="text-sm">Kubernetes • Scheduling • Interactive</span>
           </div>
 
-          <K8sScheduler />
-
           {/* Sponsors */}
           <GameSponsors />
+
+          <K8sScheduler />
 
           {/* Share buttons */}
           <div className="w-full max-w-md my-8">

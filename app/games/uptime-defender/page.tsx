@@ -42,12 +42,12 @@ export default async function UptimeDefenderPage() {
         </div>
       </div>
 
-      <UptimeDefender />
-
       {/* Sponsors */}
       <div className="container px-4 py-4 mx-auto max-w-7xl">
         <GameSponsors />
       </div>
+
+      <UptimeDefender />
     </>
   );
 }

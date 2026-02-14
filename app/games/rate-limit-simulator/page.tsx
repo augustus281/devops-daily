@@ -45,11 +45,12 @@ export default async function RateLimitSimulatorPage() {
           <h2 className="sr-only">
             Rate Limit Simulator - Learn API Rate Limiting & Backoff Strategies
           </h2>
-          {/* Game Component */}
-          <RateLimitSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <RateLimitSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">

@@ -66,10 +66,10 @@ export default function LinuxTerminalPage() {
             Learn Linux - Interactive Terminal Tutorial
           </h2>
 
-         <LinuxTerminal />
-
           {/* Sponsors */}
           <GameSponsors />
+
+         <LinuxTerminal />
 
          <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
            <h2 className="mb-4 text-2xl font-bold">About This Tutorial</h2>

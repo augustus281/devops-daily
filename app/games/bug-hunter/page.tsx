@@ -35,12 +35,12 @@ export default function BugHunterPage() {
         </div>
       </div>
 
-      <BugHunter />
-
       {/* Sponsors */}
       <div className="container px-4 py-4 mx-auto max-w-7xl">
         <GameSponsors />
       </div>
+
+      <BugHunter />
     </>
   );
 }

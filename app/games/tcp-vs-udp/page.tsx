@@ -40,10 +40,11 @@ export default async function TcpVsUdpPage() {
           <h2 className="sr-only">
             TCP vs UDP Simulator - Learn Network Protocol Differences
           </h2>
-          <TcpVsUdpSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          <TcpVsUdpSimulator />
 
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
             <h2 className="mb-4 text-2xl font-bold">Understanding TCP vs UDP</h2>

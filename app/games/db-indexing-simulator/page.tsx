@@ -43,11 +43,12 @@ export default async function DbIndexingSimulatorPage() {
           <h2 className="sr-only">
             Database Indexing Simulator - Learn How Indexes Speed Up SQL Queries
           </h2>
-          {/* Game Component */}
-          <DbIndexingSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <DbIndexingSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">

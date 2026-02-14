@@ -34,10 +34,11 @@ export default async function ScalableSentryPage() {
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="scalable-sentry" gameTitle={gameTitle} />
        </div>
-       <ScalableSentry />
 
         {/* Sponsors */}
         <GameSponsors />
+
+       <ScalableSentry />
       </div>
     </>
   );

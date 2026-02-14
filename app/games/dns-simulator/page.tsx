@@ -41,10 +41,11 @@ export default async function DnsSimulatorPage() {
           <h2 className="sr-only">
             DNS Resolution Simulator - Learn How Domain Name System Works
           </h2>
-          <DnsSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          <DnsSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">

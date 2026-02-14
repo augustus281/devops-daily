@@ -34,10 +34,11 @@ export default async function GitOpsWorkflowPage() {
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="gitops-workflow" gameTitle={gameTitle} />
         </div>
-        <GitOpsWorkflow />
 
         {/* Sponsors */}
         <GameSponsors />
+
+        <GitOpsWorkflow />
       </div>
     </>
   );

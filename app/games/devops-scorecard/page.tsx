@@ -45,11 +45,11 @@ export default async function DevOpsScorecardPage() {
           {/* Page H1 heading for SEO and accessibility */}
           <h1 className="sr-only">{gameTitle}</h1>
 
-          {/* Game Component */}
-          <DevOpsScorecard />
-
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <DevOpsScorecard />
 
           {/* Educational Content */}
           <div className="w-full max-w-4xl p-6 my-8 rounded-lg bg-muted/30">

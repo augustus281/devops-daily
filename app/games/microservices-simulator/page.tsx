@@ -45,11 +45,12 @@ export default async function MicroservicesSimulatorPage() {
           <h2 className="sr-only">
             Microservices Architecture Simulator - Learn Service Communication & Resilience
           </h2>
-          {/* Game Component */}
-          <MicroservicesSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <MicroservicesSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">

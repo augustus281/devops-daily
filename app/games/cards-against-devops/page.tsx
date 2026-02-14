@@ -34,10 +34,11 @@ export default async function CardsAgainstDevOpsPage() {
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="cards-against-devops" gameTitle={gameTitle} />
         </div>
-        <CardsAgainstDevOps />
 
         {/* Sponsors */}
         <GameSponsors />
+
+        <CardsAgainstDevOps />
       </div>
     </>
   );

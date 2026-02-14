@@ -41,10 +41,11 @@ export default async function AwsVpcSimulatorPage() {
           <h2 className="sr-only">
             AWS VPC Networking Simulator - Learn How Virtual Private Clouds Work
           </h2>
-          <AwsVpcSimulator />
 
           {/* Sponsors */}
           <GameSponsors />
+
+          <AwsVpcSimulator />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">

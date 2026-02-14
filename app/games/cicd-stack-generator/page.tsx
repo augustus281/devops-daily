@@ -42,11 +42,11 @@ export default async function CICDStackGeneratorPage() {
         </div>
 
         <div className="flex flex-col items-center max-w-4xl mx-auto">
-          {/* Game Component */}
-          <CICDStackGenerator />
-
           {/* Sponsors */}
           <GameSponsors />
+
+          {/* Game Component */}
+          <CICDStackGenerator />
 
           {/* Share buttons */}
           <div className="w-full max-w-md my-8">
