@@ -1,5 +1,5 @@
 /**
- * Centralized sponsor data for the entire site.
+ * Centralized sponsor data for the entire site (single source of truth).
  * Add, update, or remove sponsors here and changes will be reflected everywhere.
  */
 
@@ -9,7 +9,10 @@ export interface Sponsor {
   url: string;
   tagline?: string;
   description?: string;
+  /** Base className for logo (colors, fill, etc.) - used everywhere */
   className?: string;
+  /** Additional className for sidebar context (sizing, positioning) */
+  sidebarClassName?: string;
 }
 
 export const sponsors: Sponsor[] = [
@@ -27,6 +30,7 @@ export const sponsors: Sponsor[] = [
     tagline: 'Developer community & tools',
     description: 'Join a community of developers sharing knowledge and tools',
     className: 'fill-current text-red-500',
+    sidebarClassName: 'w-auto h-12 shrink-0 -mt-0.5 ml-1',
   },
 ];
 
