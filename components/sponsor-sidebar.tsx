@@ -1,15 +1,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Sparkles, ExternalLink } from 'lucide-react';
+import { Clock, Sparkles, ExternalLink } from 'lucide-react';
 import { CarbonAds } from '@/components/carbon-ads';
 import { sponsors } from '@/lib/sponsors';
 
 interface SponsorSidebarProps {
   className?: string;
+  relatedPosts?: Array<{
+    title: string;
+    slug: string;
+    readingTime?: string;
+  }>;
 }
 
-export function SponsorSidebar({ className }: SponsorSidebarProps) {
+export function SponsorSidebar({ className, relatedPosts = [] }: SponsorSidebarProps) {
   return (
     <div className={cn('sticky top-8 space-y-6', className)}>
       {/* Sponsors Section */}
@@ -127,6 +132,41 @@ export function SponsorSidebar({ className }: SponsorSidebarProps) {
           </button>
         </form>
       </div>
+
+      {/* Related Posts Section */}
+      {relatedPosts.length > 0 && (
+        <div className="rounded-xl border border-border overflow-hidden bg-card">
+          <div className="bg-muted/50 px-4 py-3">
+            <h3 className="font-semibold flex items-center gap-2">
+              <span className="text-primary">●</span>
+              Related Posts
+            </h3>
+          </div>
+
+          <div className="p-2">
+            {relatedPosts.map((post, index) => (
+              <Link
+                key={post.slug}
+                href={`/posts/${post.slug}`}
+                className="group block p-3 rounded-lg hover:bg-muted transition-all duration-200"
+              >
+                <h4 className="font-medium line-clamp-2 group-hover:text-primary transition-colors">
+                  {post.title}
+                </h4>
+                {post.readingTime && (
+                  <div className="flex items-center text-sm text-muted-foreground mt-1.5">
+                    <Clock className="mr-1.5 h-3 w-3" />
+                    <span>{post.readingTime}</span>
+                  </div>
+                )}
+                {index < relatedPosts.length - 1 && (
+                  <div className="mt-3 border-b border-border/50" />
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
