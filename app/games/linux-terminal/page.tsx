@@ -3,7 +3,7 @@ import { Breadcrumb } from '@/components/breadcrumb';
 import { BreadcrumbSchema } from '@/components/schema-markup';
 import LinuxTerminal from '@/components/games/linux-terminal';
 import { GameActions } from '@/components/games/game-actions';
-import { SponsorSidebar } from '@/components/sponsor-sidebar';
+import { GameSponsors } from '@/components/games/game-sponsors';
 import { Twitter, Facebook, Linkedin } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -169,7 +169,7 @@ export default function LinuxTerminalPage() {
           {/* Sponsor Sidebar */}
           <aside className="lg:col-span-3">
             <div className="sticky top-8">
-              <SponsorSidebar />
+              <GameSponsors />
             </div>
           </aside>
         </div>

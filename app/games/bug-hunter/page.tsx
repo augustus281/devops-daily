@@ -4,7 +4,7 @@ import { BreadcrumbSchema } from '@/components/schema-markup';
 import BugHunter from '@/components/games/bug-hunter';
 import { generateGameMetadata } from '@/lib/game-metadata';
 import { GameActions } from '@/components/games/game-actions';
-import { SponsorSidebar } from '@/components/sponsor-sidebar';
+import { GameSponsors } from '@/components/games/game-sponsors';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateGameMetadata('bug-hunter');
@@ -42,7 +42,7 @@ export default function BugHunterPage() {
           </div>
           <aside className="lg:col-span-3">
             <div className="sticky top-8">
-              <SponsorSidebar />
+              <GameSponsors />
             </div>
           </aside>
         </div>

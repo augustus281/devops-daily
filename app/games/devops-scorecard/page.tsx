@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { generateGameMetadata } from '@/lib/game-metadata';
 import { getGameById } from '@/lib/games';
 import { GameActions } from '@/components/games/game-actions';
-import { SponsorSidebar } from '@/components/sponsor-sidebar';
+import { GameSponsors } from '@/components/games/game-sponsors';
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateGameMetadata('devops-scorecard');
@@ -154,7 +154,7 @@ export default async function DevOpsScorecardPage() {
           {/* Sponsor Sidebar */}
           <aside className="lg:col-span-3">
             <div className="sticky top-8">
-              <SponsorSidebar />
+              <GameSponsors />
             </div>
           </aside>
         </div>
