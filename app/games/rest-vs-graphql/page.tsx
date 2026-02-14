@@ -36,21 +36,14 @@ export default async function RestVsGraphqlPage() {
           <GameActions gameSlug="rest-vs-graphql" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col">
+        <div className="flex flex-col mx-auto max-w-7xl">
           <h2 className="sr-only">
             REST API vs GraphQL - Interactive Comparison Simulator
-          </h2>
-          <RestVsGraphqlSimulator />
-          </div>
+         </h2>
+         <RestVsGraphqlSimulator />
 
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
+          {/* Sponsors */}
+          <GameSponsors />
         </div>
       </div>
     </>

@@ -36,13 +36,14 @@ export default async function TcpVsUdpPage() {
           <GameActions gameSlug="tcp-vs-udp" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col">
+        <div className="flex flex-col mx-auto max-w-7xl">
           <h2 className="sr-only">
             TCP vs UDP Simulator - Learn Network Protocol Differences
           </h2>
           <TcpVsUdpSimulator />
+
+          {/* Sponsors */}
+          <GameSponsors />
 
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
             <h2 className="mb-4 text-2xl font-bold">Understanding TCP vs UDP</h2>
@@ -81,14 +82,6 @@ export default async function TcpVsUdpPage() {
               </ul>
             </div>
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

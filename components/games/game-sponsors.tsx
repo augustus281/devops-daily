@@ -15,7 +15,7 @@ const sponsors = [
     name: 'DevDojo',
     logo: '/devdojo.svg?height=60&width=120',
     url: 'https://devdojo.com',
-    className: 'h-8 w-auto fill-current text-red-500',
+    className: 'h-5 w-auto fill-current text-red-500',
   },
 ];
 
@@ -24,46 +24,39 @@ interface GameSponsorsProps {
 }
 
 /**
- * Minimal, unobtrusive sponsor display for game/simulator pages.
- * Designed to match the clean aesthetic of game layouts.
+ * Slim, inline sponsor bar for game/simulator pages.
+ * Placed below the game component, full width, minimal design.
  */
 export function GameSponsors({ className }: GameSponsorsProps) {
   return (
-    <div className={cn('space-y-3', className)}>
-      <p className="text-xs text-muted-foreground">
-        Supported by
-      </p>
-      <div className="space-y-2">
+    <div className={cn('w-full my-6', className)}>
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 py-3 px-4 rounded-lg border border-border/30 bg-muted/20">
+        <span className="text-xs text-muted-foreground">Supported by</span>
         {sponsors.map((sponsor) => (
           <Link
             key={sponsor.name}
             href={sponsor.url}
             target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/50 hover:border-border transition-colors"
+            rel="noopener noreferrer sponsored"
+            className="group flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            <div className="h-8 flex items-center justify-center shrink-0">
-              <Image
-                src={sponsor.logo || '/placeholder.svg'}
-                alt={sponsor.name}
-                width={80}
-                height={32}
-                className={cn('h-6 w-auto', sponsor.className)}
-              />
-            </div>
-            <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-              {sponsor.name}
-            </span>
-            <ExternalLink className="h-3 w-3 text-muted-foreground/50 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Image
+              src={sponsor.logo || '/placeholder.svg'}
+              alt={sponsor.name}
+              width={60}
+              height={24}
+              className={cn('h-5 w-auto opacity-70 group-hover:opacity-100 transition-opacity', sponsor.className)}
+            />
+            <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
           </Link>
         ))}
+        <Link
+          href="/sponsorship"
+          className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+        >
+          Become a sponsor
+        </Link>
       </div>
-      <a
-        href="/sponsorship"
-        className="block text-xs text-muted-foreground/70 hover:text-muted-foreground transition-colors"
-      >
-        Become a sponsor →
-      </a>
     </div>
   );
 }

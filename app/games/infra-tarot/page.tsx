@@ -41,9 +41,7 @@ export default async function InfraTarotPage() {
           <GameActions gameSlug="infra-tarot" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center mx-auto max-w-7xl">
           <h2 className="sr-only">Infra Tarot Cards - Your Infrastructure Destiny</h2>
 
           {/* Back to Games */}
@@ -51,10 +49,13 @@ export default async function InfraTarotPage() {
             
           </div>
 
-          {/* Game Component */}
-          <InfraTarot />
+         {/* Game Component */}
+         <InfraTarot />
 
-          {/* Social Sharing */}
+          {/* Sponsors */}
+          <GameSponsors />
+
+         {/* Social Sharing */}
           <div className="w-full max-w-4xl mt-8 p-6 bg-muted/30 rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-center">Share the Fun</h2>
             <p className="text-center text-muted-foreground mb-4">
@@ -153,14 +154,6 @@ export default async function InfraTarotPage() {
               </p>
             </div>
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

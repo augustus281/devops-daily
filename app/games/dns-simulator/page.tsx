@@ -37,13 +37,14 @@ export default async function DnsSimulatorPage() {
           <GameActions gameSlug="dns-simulator" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center mx-auto max-w-7xl">
           <h2 className="sr-only">
             DNS Resolution Simulator - Learn How Domain Name System Works
           </h2>
           <DnsSimulator />
+
+          {/* Sponsors */}
+          <GameSponsors />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
@@ -137,14 +138,6 @@ export default async function DnsSimulatorPage() {
               </a>
             </div>
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

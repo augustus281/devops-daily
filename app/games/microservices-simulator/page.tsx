@@ -41,14 +41,15 @@ export default async function MicroservicesSimulatorPage() {
           <GameActions gameSlug="microservices-simulator" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center mx-auto max-w-7xl">
           <h2 className="sr-only">
             Microservices Architecture Simulator - Learn Service Communication & Resilience
           </h2>
           {/* Game Component */}
           <MicroservicesSimulator />
+
+          {/* Sponsors */}
+          <GameSponsors />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
@@ -162,19 +163,12 @@ export default async function MicroservicesSimulatorPage() {
                 className="p-3 transition-colors border rounded-lg hover:bg-muted"
               >
                 <Linkedin className="w-5 h-5" />
-             </a>
-           </div>
-         </div>
-
-         {/* Back to Games */}
+              </a>
+            </div>
           </div>
 
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
+          {/* Back to Games */}
+          
         </div>
       </div>
     </>

@@ -33,17 +33,11 @@ export default async function PacketJourneyPage() {
         <div className="flex items-center justify-between mb-4">
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="packet-journey" gameTitle={gameTitle} />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-9">
-            <PacketJourney />
-          </div>
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
-        </div>
+       </div>
+       <PacketJourney />
+
+        {/* Sponsors */}
+        <GameSponsors />
       </div>
     </>
   );

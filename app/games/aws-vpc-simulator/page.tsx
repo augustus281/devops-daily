@@ -37,13 +37,14 @@ export default async function AwsVpcSimulatorPage() {
           <GameActions gameSlug="aws-vpc-simulator" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center mx-auto max-w-7xl">
           <h2 className="sr-only">
             AWS VPC Networking Simulator - Learn How Virtual Private Clouds Work
           </h2>
           <AwsVpcSimulator />
+
+          {/* Sponsors */}
+          <GameSponsors />
 
           {/* Educational Content */}
           <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
@@ -186,14 +187,6 @@ export default async function AwsVpcSimulatorPage() {
               </a>
             </div>
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

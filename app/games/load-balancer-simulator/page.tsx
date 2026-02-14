@@ -37,17 +37,18 @@ export default async function LoadBalancerSimulatorPage() {
           <GameActions gameSlug="load-balancer-simulator" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mx-auto max-w-7xl">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center mx-auto max-w-7xl">
           <h2 className="sr-only">
             Load Balancer Algorithm Simulator - Learn Load Balancing Strategies
           </h2>
 
-          <LoadBalancerSimulator />
+         <LoadBalancerSimulator />
 
-          <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
-            <h2 className="mb-4 text-2xl font-bold">Understanding Load Balancing</h2>
+          {/* Sponsors */}
+          <GameSponsors />
+
+         <div className="w-full p-6 my-8 rounded-lg bg-muted/30">
+           <h2 className="mb-4 text-2xl font-bold">Understanding Load Balancing</h2>
             <div className="grid gap-6 md:grid-cols-2">
               <div>
                 <h3 className="mb-3 text-lg font-semibold">What You'll Learn</h3>
@@ -149,14 +150,6 @@ export default async function LoadBalancerSimulatorPage() {
               </a>
             </div>
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

@@ -41,11 +41,12 @@ export default async function DevOpsMemesPage() {
           <GameActions gameSlug="devops-memes" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center max-w-6xl mx-auto">
           {/* Game Component */}
           <DevOpsMemes />
+
+          {/* Sponsors */}
+          <GameSponsors />
 
           {/* Educational Content */}
           <div className="w-full max-w-4xl mt-16 space-y-8">
@@ -156,14 +157,6 @@ export default async function DevOpsMemesPage() {
 
             
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

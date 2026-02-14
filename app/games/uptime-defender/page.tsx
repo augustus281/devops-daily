@@ -42,17 +42,11 @@ export default async function UptimeDefenderPage() {
         </div>
       </div>
 
-      <div className="container px-4 py-4 mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-9">
-            <UptimeDefender />
-          </div>
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
-        </div>
+      <UptimeDefender />
+
+      {/* Sponsors */}
+      <div className="container px-4 py-4 mx-auto max-w-7xl">
+        <GameSponsors />
       </div>
     </>
   );

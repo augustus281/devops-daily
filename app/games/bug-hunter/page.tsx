@@ -35,17 +35,11 @@ export default function BugHunterPage() {
         </div>
       </div>
 
-      <div className="container px-4 py-4 mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-9">
-            <BugHunter />
-          </div>
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
-        </div>
+      <BugHunter />
+
+      {/* Sponsors */}
+      <div className="container px-4 py-4 mx-auto max-w-7xl">
+        <GameSponsors />
       </div>
     </>
   );

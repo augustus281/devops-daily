@@ -51,14 +51,15 @@ export default async function GitQuizPage() {
           <GameActions gameSlug="git-quiz" gameTitle={gameTitle} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-7xl mx-auto">
-          {/* Main Content */}
-          <div className="lg:col-span-9 flex flex-col items-center">
+        <div className="flex flex-col items-center max-w-6xl mx-auto">
           {/* Page H1 heading for SEO and accessibility */}
           <h1 className="sr-only">Git Command Quiz</h1>
 
           {/* Quiz Component */}
           <GenericQuiz quizConfig={quizConfig} />
+
+          {/* Sponsors */}
+          <GameSponsors />
 
           {/* Share buttons */}
           <div className="w-full max-w-md my-8">
@@ -160,14 +161,6 @@ export default async function GitQuizPage() {
               variant="compact"
             />
           </div>
-          </div>
-
-          {/* Sponsor Sidebar */}
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
         </div>
       </div>
     </>

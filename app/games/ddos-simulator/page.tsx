@@ -34,16 +34,10 @@ export default async function DDoSSimulatorPage() {
           <Breadcrumb items={breadcrumbItems} />
           <GameActions gameSlug="ddos-simulator" gameTitle={gameTitle} />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-9">
-            <DDoSSimulator />
-          </div>
-          <aside className="lg:col-span-3">
-            <div className="sticky top-8">
-              <GameSponsors />
-            </div>
-          </aside>
-        </div>
+        <DDoSSimulator />
+
+        {/* Sponsors */}
+        <GameSponsors />
       </div>
     </>
   );
