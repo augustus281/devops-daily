@@ -371,6 +371,9 @@ export default function RateLimitSimulator() {
         return;
       }
 
+      // Don't intercept browser shortcuts (CMD+R, CTRL+R, etc.)
+      if (e.metaKey || e.ctrlKey) return;
+
       // Space to toggle start/stop
       if (e.key === ' ') {
         e.preventDefault();
@@ -378,7 +381,7 @@ export default function RateLimitSimulator() {
       }
 
       // R to reset
-      if (e.key === 'r' || e.key === 'R') {
+      if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         resetSimulation();
       }

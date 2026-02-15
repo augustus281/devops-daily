@@ -111,6 +111,9 @@ export default function GenericQuiz({ quizConfig }: GenericQuizProps) {
         return;
       }
 
+      // Don't intercept browser shortcuts (CMD+R, CTRL+R, etc.)
+      if (e.metaKey || e.ctrlKey) return;
+
       // Only handle keys when quiz is active (not on start/results screen)
       if (!gameStarted || currentQuestion >= quizConfig.questions.length) {
         // Enter or Space to start quiz
@@ -119,7 +122,7 @@ export default function GenericQuiz({ quizConfig }: GenericQuizProps) {
           setGameStarted(true);
         }
         // R to restart on results screen
-        if (e.key === 'r' || e.key === 'R') {
+        if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) {
           handleRestart();
         }
         return;
@@ -151,13 +154,13 @@ export default function GenericQuiz({ quizConfig }: GenericQuizProps) {
       }
 
       // R to restart quiz
-      if (e.key === 'r' || e.key === 'R') {
+      if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) {
         handleRestart();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   });
 
   const getDifficultyColor = (difficulty: string) => {

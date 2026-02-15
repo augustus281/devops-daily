@@ -168,6 +168,9 @@ export default function DbIndexingSimulator() {
         return;
       }
 
+      // Don't intercept browser shortcuts (CMD+R, CTRL+R, etc.)
+      if (e.metaKey || e.ctrlKey) return;
+
       // Number keys 1-4 to select query
       const num = parseInt(e.key);
       if (num >= 1 && num <= QUERIES.length && !isRunning) {
@@ -182,7 +185,7 @@ export default function DbIndexingSimulator() {
       }
 
       // R to reset
-      if (e.key === 'r' || e.key === 'R') {
+      if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         reset();
       }
@@ -194,8 +197,8 @@ export default function DbIndexingSimulator() {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isRunning]);
 
   const hasIndex = useCallback(

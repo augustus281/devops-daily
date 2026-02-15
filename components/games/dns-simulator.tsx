@@ -279,6 +279,9 @@ export default function DnsSimulator() {
         return;
       }
 
+      // Don't intercept browser shortcuts (CMD+R, CTRL+R, etc.)
+      if (e.metaKey || e.ctrlKey) return;
+
       // Space to start lookup
       if (e.key === ' ' && !isRunning && currentStepIndex === -1) {
         e.preventDefault();
@@ -297,7 +300,7 @@ export default function DnsSimulator() {
       }
 
       // R to reset
-      if (e.key === 'r' || e.key === 'R') {
+      if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         handleReset();
       }
@@ -313,8 +316,8 @@ export default function DnsSimulator() {
 
   // Add keyboard event listener
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
   const runLookup = useCallback(() => {

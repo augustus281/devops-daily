@@ -107,6 +107,9 @@ export default function CachingSimulator() {
         return;
       }
 
+      // Don't intercept browser shortcuts (CMD+R, CTRL+R, etc.)
+      if (e.metaKey || e.ctrlKey) return;
+
       // Number keys 1-6 to request data item (A-F)
       const num = parseInt(e.key);
       if (num >= 1 && num <= DATA_ITEMS.length && !animation) {
@@ -115,7 +118,7 @@ export default function CachingSimulator() {
       }
 
       // R to reset
-      if (e.key === 'r' || e.key === 'R') {
+      if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) {
         e.preventDefault();
         reset();
       }
@@ -127,8 +130,8 @@ export default function CachingSimulator() {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [animation]);
 
   const getItemToEvict = useCallback(
